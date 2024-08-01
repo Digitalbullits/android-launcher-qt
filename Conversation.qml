@@ -185,6 +185,7 @@ LauncherPage {
 
     ListView {
         id: listView
+        clip: true
         anchors.top: parent.top
         width: parent.width
         height: parent.height
@@ -603,7 +604,7 @@ LauncherPage {
                         width: messageBox.width * widthFactor
                         text: model.m_ERROR !== undefined ? model.m_ERROR : ""
                         font.pointSize: mainView.smallFontSize
-                        color: Universal.accent
+                        color: mainView.accentColor
                         clip: true
                         opacity: 0.5
                         horizontalAlignment: Text.AlignLeft
@@ -872,9 +873,9 @@ LauncherPage {
                 message["messages"].forEach(function (signalMessage, index) {
                     signalMessage["isSignal"] = true
                     previousMessage = signalMessage
-                    for (const [messageKey, messageValue] of Object.entries(signalMessage)) {
-                        console.log("Conversation | * " + messageKey + ": \"" + messageValue + "\": " + typeof messageValue)
-                    }
+//                    for (const [messageKey, messageValue] of Object.entries(signalMessage)) {
+//                        console.log("Conversation | * " + messageKey + ": \"" + messageValue + "\": " + typeof messageValue)
+//                    }
                 })
                 conversationPage.messages = conversationPage.messages.concat(message["messages"])
                 conversationPage.updateListModel()

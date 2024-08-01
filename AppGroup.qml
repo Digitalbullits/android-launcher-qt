@@ -21,12 +21,15 @@ Item {
     property double headerPointSize
     property double backgroundOpacity
     property double desaturation: 1.0
+    property var accentColor
+
 
     property int groupIndex: 0
     property int selectedGroupIndex: 1
 
     property bool unreadMessages: false
     property bool newCalls: false
+    property var notificationData:""
 
     property var iconMap: ({})
     property var labelMap: ({})
@@ -225,6 +228,7 @@ Item {
                             } else {
                                 AN.SystemDispatcher.dispatch("volla.launcher.runAppAction", {"appId": model.package})
                             }
+                             AN.SystemDispatcher.dispatch("volla.launcher.clearRedDot", {"package": model.package})
                         }
                     }
                     onPressAndHold: {
@@ -261,14 +265,16 @@ Item {
                 Rectangle {
                     id: notificationBadge
                     visible: groupItem.messageApp.includes(model.package) ? groupItem.unreadMessages
-                                                                          : model.package === groupItem.phoneApp ? groupItem.newCalls                                                               : false
+                                                                          : model.package === groupItem.phoneApp ? groupItem.newCalls
+                                                                          : groupItem.notificationData.hasOwnProperty(model.package) ? true : false
                     anchors.top: parent.top
                     anchors.left: parent.left
+                    anchors.topMargin: 6.0
                     anchors.leftMargin: (parent.width - parent.width * 0.6) * 0.5
                     width: parent.width * 0.15
                     height: parent.width * 0.15
                     radius: height * 0.5
-                    color:  Universal.accent
+                    color:  accentColor
                 }
             }
 
@@ -415,6 +421,8 @@ Item {
                 } else if (type === "volla.launcher.threadsCountResponse") {
                     console.log("AppGroup " + groupIndex + " | Unread messages: " + message["threadsCount"])
                     groupItem.unreadMessages = message["threadsCount"] > 0
+                } else if(type === "volla.launcher.otherAppNotificationResponce") {
+                    groupItem.notificationData = message["Notification"]
                 }
             }
         }
