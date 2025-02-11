@@ -240,15 +240,16 @@ LauncherPage {
             }
             TextField {
                 id: textField
-                padding: mainView.innerSpacing
+                topPadding: mainView.componentSpacing
+                bottomPadding: mainView.componentSpacing
+                leftPadding: 0.0
+                rightPadding: 0.0
                 x: mainView.innerSpacing
                 width: parent.width -mainView.innerSpacing * 2
                 placeholderText: qsTr("Filter messages ...")
                 color: mainView.fontColor
                 placeholderTextColor: "darkgrey"
                 font.pointSize: mainView.largeFontSize
-                leftPadding: 0.0
-                rightPadding: 0.0
                 background: Rectangle {
                     color: mainView.backgroundOpacity === 1.0 ? mainView.backgroundColor : "transparent"
                     border.color: "transparent"
@@ -648,10 +649,6 @@ LauncherPage {
 
                 cMessage.m_IS_SENT = message["isSent"]
 
-                if (message["isSent"]) {
-                    conversationPage.phoneNumber = message["address"]
-                }
-
                 if (message["image"] !== undefined && message["image"].length > 100) {
                     cMessage.m_IMAGE = "data:image/png;base64," + message["image"]
                 } else if (message["errorProperty"] !== undefined && message["errorProperty"]["code"] === 403) {
@@ -669,6 +666,8 @@ LauncherPage {
                 cMessage.m_DATE = message["date"]
 
                 modelArr.push(cMessage)
+
+                conversationPage.phoneNumber = message["address"]
             })
 
             conversationPage.calls.forEach(function (call, index) {
@@ -752,7 +751,7 @@ LauncherPage {
         function loadData() {
             console.log("Conversation | Load data for thread content")
 
-            conversationPage.messages.forEach(function (message, index) {
+            conversationPage.messages.forEach(function (message, index) {                
                 var cMessage = {m_ID: message["id"]}
 
                 cMessage.m_TEXT = message["body"]
@@ -767,12 +766,7 @@ LauncherPage {
 
                 cMessage.m_IS_SENT = message["isSent"]
 
-                if (!message["isSent"]) {
-                    conversationPage.phoneNumber = message["address"]
-                }
-
                 //console.debug("Conversation | Error: " + message["errorProperty"]["code"])
-                //console.debug("Conversation | Color: " + mainView.backgroundColor)
 
                 if (message["image"] !== undefined && message["image"].length > 100) {
                     cMessage.m_IMAGE = "data:image/png;base64," + message["image"]
@@ -791,6 +785,8 @@ LauncherPage {
                 cMessage.m_DATE = message["date"]
 
                 modelArr.push(cMessage)
+
+                conversationPage.phoneNumber = message["address"]
             })
         }
 
