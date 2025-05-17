@@ -56,83 +56,11 @@
         <translation type="unfinished">Fjern bogmærke</translation>
     </message>
     <message>
-        <source>Files</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Maps</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Browser</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Mail</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sync</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>VPN</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Store</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Settings</source>
-        <translation type="unfinished">Indstillinger</translation>
-    </message>
-    <message>
-        <source>Messages</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Radio</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Weather</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Bancontact</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Facebook</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>A-Droid</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Indstillinger</translation>
     </message>
     <message>
         <source>Remove App</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Music</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>De Trein</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Mynexuzhealth</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Bonsai</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>MijnOnlineAgenda</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -350,7 +278,7 @@
     </message>
     <message>
         <source>Translucent Mode</source>
-        <translation type="unfinished">Gennemskinnelig stil</translation>
+        <translation type="obsolete">Gennemskinnelig stil</translation>
     </message>
     <message>
         <source>Security mode is OFF</source>
@@ -496,6 +424,30 @@
         <source>Password needs at least four characters or numbers</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Weather</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Note</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Widgets</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dark Translucent Mode</source>
+        <translation type="unfinished">Mørk gennemskinnelig tilstand</translation>
+    </message>
+    <message>
+        <source>Light Translucent Mode</source>
+        <translation type="unfinished">Let gennemskinnelig tilstand</translation>
+    </message>
 </context>
 <context>
     <name>Springboard</name>
@@ -574,6 +526,22 @@
     <message>
         <source>Please reset contacts and try again.</source>
         <translation type="unfinished">Nulstil kontakterne, og prøv igen.</translation>
+    </message>
+    <message>
+        <source>weather</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter any location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>x</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -807,6 +775,82 @@
     </message>
     <message>
         <source>Couldn&apos;t load plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Messages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Music</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bancontact</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>De Trein</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mynexuzhealth</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bonsai</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MijnOnlineAgenda</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Facebook</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Browser</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mail</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sync</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>VPN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Store</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A-Droid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation type="unfinished">Indstillinger</translation>
+    </message>
+    <message>
+        <source>Radio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Weather</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

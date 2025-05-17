@@ -141,13 +141,16 @@ ApplicationWindow {
         property var searchMode: {
             'Duck' : 0,
             'StartPage' : 1,
-            'MetaGer' : 2
+            'MetaGer' : 2,
+            'Custom' : 3
         }
         property var theme: {
             'Light': 0,
             'Dark': 1,
-            'Translucent': 2
+            'LightTranslucent': 2,
+            'DarkTranslucent': 3
         }
+        property var vollaTheme : 1
         property var actionType: {
             'SuggestContact': 0,
             'SuggestPluginEntity' : 1,
@@ -230,6 +233,8 @@ ApplicationWindow {
         property bool isTablet: Screen.desktopAvailableWidth > 520
         property int maxTitleLength: 120
 
+        property string searchEngineName
+        property string searchEngineUrl
         property string galleryApp: "org.fossify.gallery"
         property string calendarApp: "org.fossify.calendar"
         property string cameraApp: "com.mediatek.camera"
@@ -552,6 +557,7 @@ ApplicationWindow {
         }
 
         function switchTheme(theme, updateLockScreen) {
+            mainView.vollaTheme = theme
             if (settings.sync) {
                 settings.sync()
             }
@@ -569,11 +575,17 @@ ApplicationWindow {
                 mainView.backgroundColor = "white"
                 mainView.fontColor = "black"
                 break
-            case mainView.theme.Translucent:
+            case mainView.theme.DarkTranslucent:
                 Universal.theme = Universal.Dark
                 mainView.backgroundOpacity = 0.3
                 mainView.backgroundColor = "transparent"
                 mainView.fontColor = "white"
+            break
+            case mainView.theme.LightTranslucent:
+                Universal.theme = Universal.Light
+                mainView.backgroundOpacity = 0.3
+                mainView.backgroundColor = "transparent"
+                mainView.fontColor = "black"
                 break
             default:
                 console.log("MainView | Not supported theme: " + theme)
@@ -878,6 +890,10 @@ ApplicationWindow {
             return stored
         }
 
+        function updateWidgets(widgetId, isVisible) {
+            springboard.children[0].item.updateWidgets(widgetId, isVisible)
+        }
+
         function getSearchMode() {
             return settings.searchMode
         }
@@ -1153,10 +1169,20 @@ ApplicationWindow {
                     }
                 } else if (type === "volla.launcher.uiModeChanged") {
                     if (message["uiMode"] !== settings.theme) {
+                        settings.theme = message["uiMode"]
                         if (message["uiMode"] === mainView.theme.Light) {
-                            mainView.switchTheme(mainView.theme.Light, (settings.theme !== mainView.theme.Translucent))
-                        } else if (message["uiMode"] === mainView.theme.Dark && settings.theme !== mainView.theme.Translucent) {
-                            mainView.switchTheme(mainView.theme.Dark, true)
+                            if(mainView.vollaTheme !== undefined && (mainView.vollaTheme === mainView.theme.LightTranslucent || mainView.vollaTheme === mainView.theme.DarkTranslucent)){
+                                mainView.switchTheme(mainView.theme.LightTranslucent, true)
+                            } else {
+                                mainView.switchTheme(mainView.theme.Light, true)
+                            }
+
+                        } else if (message["uiMode"] === mainView.theme.Dark) {
+                            if(mainView.vollaTheme !== undefined && (mainView.vollaTheme == mainView.theme.LightTranslucent || mainView.vollaTheme == mainView.theme.DarkTranslucent)){
+                                mainView.switchTheme(mainView.theme.DarkTranslucent, true)
+                            } else {
+                                mainView.switchTheme(mainView.theme.Dark, true)
+                            }
                         }
                     }
                 } else if (type === "volla.launcher.checkSttAvailabilityResponse") {
@@ -1191,6 +1217,8 @@ ApplicationWindow {
 
     Settings {
         id: settings
+        property string searchEngineName: ""
+        property string searchEngineUrl: ""
         property int theme: mainView.theme.Dark
         property int searchMode: mainView.searchMode.StartPage
         property bool fullscreen: false
@@ -1239,6 +1267,12 @@ ApplicationWindow {
                     console.debug("AppWindow | Set default theme to " + presetDict.theme)
                     settings.theme = presetDict.theme
                 }
+                if (presetDict.searchengine !== undefined && settings.firstStart) {
+                    console.debug("AppWindow | Set search engine to "+ presetDict.searchengine.name)
+                    settings.searchMode = mainView.searchMode.Custom
+                    settings.searchEngineName = presetDict.searchengine.name
+                    settings.searchEngineUrl = presetDict.searchengine.url
+                }
             }
         }
 
@@ -1271,6 +1305,10 @@ ApplicationWindow {
             }
             if (signalIsActivated) {
                 AN.SystemDispatcher.dispatch("volla.launcher.signalEnable", { "enableSignal": signalIsActivated})
+            }
+            if (searchMode === mainView.searchMode.Custom) {
+                mainView.searchEngineUrl = settings.searchEngineUrl
+                mainView.searchEngineName = settings.searchEngineName
             }
             mainView.useVibration = useHapticMenus
             mainView.useColoredIcons = useColoredIcons

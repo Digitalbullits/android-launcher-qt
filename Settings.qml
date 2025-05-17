@@ -50,6 +50,10 @@ LauncherPage {
                     pluginSettingsItemColumn.menuState = false
                     pluginSettingsItemColumn.destroyCheckboxes()
                 }
+                if (item !== widgetsSettingsItemColumn && widgetsSettingsItemColumn.checkboxes.length > 0) {
+                    widgetsSettingsItemColumn.menuState = false
+                    widgetsSettingsItemColumn.destroyCheckboxes()
+                }
                 if (item !== resetSettingsItemColumn && resetSettingsItemColumn.menuState) {
                     resetSettingsItemColumn.menuState = false
                 }
@@ -96,16 +100,19 @@ LauncherPage {
                         }
 
                         Component.onCompleted: {
-                            theme = themeSettings.theme
-                            switch (themeSettings.theme) {
+                            theme = mainView.vollaTheme
+                            switch (mainView.vollaTheme) {
                             case mainView.theme.Dark:
                                 text = qsTr("Dark Mode")
                                 break
                             case mainView.theme.Light:
                                 text = qsTr("Light Mode")
                                 break
-                            case mainView.theme.Translucent:
-                                text = qsTr("Translucent Mode")
+                            case mainView.theme.DarkTranslucent:
+                                text = qsTr("Dark Translucent Mode")
+                                break
+                            case mainView.theme.LightTranslucent:
+                                text = qsTr("Light Translucent Mode")
                                 break
                             default:
                                 console.log("Settings | Unknown theme selected: " + mainView.theme)
@@ -147,17 +154,34 @@ LauncherPage {
                         fontPointSize: mainView.mediumFontSize
                     }
                     HighlightButton {
-                        id: translucentModeOption
+                        id: darkTranslucentModeOption
 
-                        property var theme: mainView.theme.Translucent
+                        property var theme: mainView.theme.DarkTranslucent
+
+                        leftPadding: mainView.innerSpacing
+                        rightPadding: mainView.innerSpacing
+                        bottomPadding: mainView.innerSpacing
+                        width: parent.width
+                        visible: themeSettingsItem.menuState
+                        text: qsTr("Dark Translucent Mode")
+                        boldText: themeSettingsItem.selectedMenuItem === darkTranslucentModeOption
+                        textColor: "white"
+                        textOpacity: themeSettingsItem.labelOpacity
+                        backgroundColor: themeSettingsItem.menuState ? mainView.accentColor : "transparent"
+                        fontPointSize: mainView.mediumFontSize
+                    }
+                    HighlightButton {
+                        id: lightTranslucentModeOption
+
+                        property var theme: mainView.theme.LightTranslucent
 
                         leftPadding: mainView.innerSpacing
                         rightPadding: mainView.innerSpacing
                         bottomPadding: mainView.innerSpacing * 2
                         width: parent.width
                         visible: themeSettingsItem.menuState
-                        text: qsTr("Translucent Mode")
-                        boldText: themeSettingsItem.selectedMenuItem === translucentModeOption
+                        text: qsTr("Light Translucent Mode")
+                        boldText: themeSettingsItem.selectedMenuItem === lightTranslucentModeOption
                         textColor: "white"
                         textOpacity: themeSettingsItem.labelOpacity
                         backgroundColor: themeSettingsItem.menuState ? mainView.accentColor : "transparent"
@@ -206,16 +230,32 @@ LauncherPage {
                 onMouseYChanged: {
                     var firstPoint = mapFromItem(darkModeOption, 0, 0)
                     var secondPoint = mapFromItem(lightModeOption, 0, 0)
-                    var thirdPoint = mapFromItem(translucentModeOption, 0, 0)
+                    var thirdPoint = mapFromItem(darkTranslucentModeOption, 0, 0)
+                    var forthPoint = mapFromItem(lightTranslucentModeOption, 0, 0)
+                    if(firstPoint.y === 0){
+                        firstPoint.y = firstPoint.y+darkModeOption.height
+                    }
+                    if(secondPoint.y === 0){
+                        secondPoint.y = firstPoint.y+lightModeOption.height
+                    }
+                    if(thirdPoint.y === 0){
+                        thirdPoint.y = secondPoint.y+darkModeOption.height
+                    }
+                    if(forthPoint.y === 0){
+                        forthPoint.y = thirdPoint.y+darkModeOption.height
+                    }
+
                     var selectedItem
 
                     if (mouseY > firstPoint.y && mouseY < firstPoint.y + darkModeOption.height) {
                         selectedItem = darkModeOption
                     } else if (mouseY > secondPoint.y && mouseY < secondPoint.y + lightModeOption.height) {
                         selectedItem = lightModeOption
-                    } else if (mouseY > thirdPoint.y && mouseY < thirdPoint.y + translucentModeOption.height) {
-                        selectedItem = translucentModeOption
-                    } else {
+                    } else if (mouseY > thirdPoint.y && mouseY < thirdPoint.y + darkTranslucentModeOption.height) {
+                        selectedItem = darkTranslucentModeOption
+                    } else if (mouseY > forthPoint.y && mouseY < forthPoint.y + lightTranslucentModeOption.height) {
+                        selectedItem = lightTranslucentModeOption
+                    }else {
                         selectedItem = themeSettingsItemTitle
                     }
                     if (selectedMenuItem !== selectedItem) {
@@ -231,8 +271,10 @@ LauncherPage {
                     console.log("Settings | Execute mode selection: " + selectedMenuItem.text + ", " + selectedMenuItem.theme)
                     if (themeSettings.theme !== selectedMenuItem.theme && selectedMenuItem !== themeSettingsItemTitle) {
                         themeSettingsItemTitle.text = selectedMenuItem.text
+                        themeSettingsItemTitle.theme = selectedMenuItem.theme
 
                         themeSettings.theme = selectedMenuItem.theme
+                        mainView.vollaTheme = themeSettings.theme
 
                         if (themeSettings.sync) {
                             themeSettings.sync()
@@ -247,9 +289,13 @@ LauncherPage {
                                 console.log("Setting | Enable light mode")
                                 mainView.switchTheme(mainView.theme.Light, true)
                                 break
-                            case mainView.theme.Translucent:
-                                console.log("Setting | Enable translucent mode")
-                                mainView.switchTheme(mainView.theme.Translucent, true)
+                            case mainView.theme.DarkTranslucent:
+                                console.log("Setting | Enable Dark translucent mode")
+                                mainView.switchTheme(mainView.theme.DarkTranslucent, true)
+                                break
+                            case mainView.theme.LightTranslucent:
+                                console.log("Setting | Enable Light translucent mode")
+                                mainView.switchTheme(mainView.theme.LightTranslucent, true)
                                 break
                             default:
                                 console.log("Settings | Unknown theme selected: " + themeSettings.theme)
@@ -1084,6 +1130,18 @@ LauncherPage {
                         object = component.createObject(searchSettingsItemColumn, properties)
                         object.activeCheckbox = true
                         searchSettingsItemColumn.checkboxes.push(object)
+
+                        if (mainView.searchEngine !== undefined) {
+                            component = Qt.createComponent("/Checkbox.qml", designSettingsItemColumn)
+                            properties["actionId"] = "custom"
+                            properties["text"] = mainView.searchEngineName
+                            properties["checked"] = mainView.getSearchMode() === mainView.searchMode.Custom
+                            properties["accentColor"] = mainView.accentColor
+                            object = component.createObject(searchSettingsItemColumn, properties)
+                            object.activeCheckbox = true
+                            searchSettingsItemColumn.checkboxes.push(object)
+                        }
+
                         console.log("Settings | Checkboxes created")
                     }
 
@@ -1111,6 +1169,8 @@ LauncherPage {
                             mainView.updateSearchMode(mainView.searchMode.StartPage)
                         } else if (actionId === "metager" && active) {
                             mainView.updateSearchMode(mainView.searchMode.MetaGer)
+                        } else if (actionId === "custom" && active) {
+                            mainView.updateSearchMode(mainView.searchMode.Custom)
                         }
                     }
                 }
@@ -1314,6 +1374,109 @@ LauncherPage {
                     console.log("Settings | Blurr filter chanded to " + value)
                     designSettings.blurEffect = value
                     mainView.updateSettings("blurEffect", value)
+                }
+            }
+
+            Item {
+                id: widgetsSettingsItem
+                width: parent.width
+                implicitHeight: widgetsSettingsItemColumn.height
+                visible: mainView.isTablet
+
+                property var defaultWidgets : [{ "id": 0, "name": qsTr("Weather"), "active": widgetsSettings.weatherWidgetIsVisible },
+                                               { "id": 1, "name": qsTr("Clock"), "active": widgetsSettings.clockWidgetIsVisible },
+                                               { "id": 2, "name": qsTr("Note"), "active": widgetsSettings.noteWidgetIsVisible }]
+
+                Column {
+                    id: widgetsSettingsItemColumn
+                    width: parent.width
+
+                    property bool menuState: false
+                    property var checkboxes: new Array
+
+                    HighlightButton {
+                        id: widgetsSettingsItemButton
+                        width: parent.width
+                        padding: mainView.innerSpacing
+                        text: qsTr("Widgets")
+                        boldText: widgetsSettingsItemColumn.menuState
+                        onClicked: {
+                            widgetsSettingsItemColumn.menuState = !widgetsSettingsItemColumn.menuState
+                            if (widgetsSettingsItemColumn.menuState) {
+                                console.log("Settings | Will create checkboxes")
+                                widgetsSettingsItemColumn.createCheckboxes()
+                                settingsColumn.closeAllItemsExcept(widgetsSettingsItemColumn)
+                            } else {
+                                console.log("Settings | Will destroy checkboxes")
+                                widgetsSettingsItemColumn.destroyCheckboxes()
+                            }
+                        }
+                    }
+
+                    function createCheckboxes() {
+                        for (var i = 0; i < widgetsSettingsItem.defaultWidgets.length; i++) {
+                            var component = Qt.createComponent("/Checkbox.qml", widgetsSettingsItemColumn)
+                            var properties = { "actionId": widgetsSettingsItem.defaultWidgets[i].id,
+                                "text": widgetsSettingsItem.defaultWidgets[i].name,
+                                "checked": widgetsSettingsItem.defaultWidgets[i].active,
+                                "labelFontSize": mainView.mediumFontSize, "circleSize": mainView.largeFontSize,
+                                "leftPadding": mainView.innerSpacing, "rightPadding": mainView.innerSpacing,
+                                "bottomPadding": mainView.innerSpacing / 2, "topPadding": mainView.innerSpacing / 2,
+                                "hasRemoveButton": false, // Relevant as soon more widgets can be installed
+                                "accentColor": mainView.accentColor }
+                            var object = component.createObject(widgetsSettingsItemColumn, properties)
+                            object.activeCheckbox = true
+                            widgetsSettingsItemColumn.checkboxes.push(object)
+                        }
+                        console.log("Settings | Checkboxes created")
+                    }
+
+                    function destroyCheckboxes() {
+                        for (var i = 0; i < widgetsSettingsItemColumn.checkboxes.length; i++) {
+                            var checkbox = widgetsSettingsItemColumn.checkboxes[i]
+                            checkbox.destroy()
+                        }
+                        widgetsSettingsItemColumn.checkboxes = new Array
+                    }
+
+                    function updateSettings(actionId, active) {
+                        console.log("Settings | Update settings for " + actionId + ", " + active)
+
+                        switch (actionId) {
+                            case 0:
+                                widgetsSettings.weatherWidgetIsVisible = active
+                                break
+                            case 1:
+                                widgetsSettings.clockWidgetIsVisible = active
+                                break
+                            case 2:
+                                widgetsSettings.noteWidgetIsVisible = active
+                                break
+                            default:
+                                break
+                        }
+
+                        widgetsSettingsItem.defaultWidgets[actionId].active = active
+                        widgetsSettings.sync()
+                        mainView.updateWidgets(actionId, active)
+                    }
+                }
+
+                Behavior on implicitHeight {
+                    NumberAnimation {
+                        duration: 250.0
+                    }
+                }
+
+                Settings {
+                    id: widgetsSettings
+                    property bool clockWidgetIsVisible: true
+                    property bool weatherWidgetIsVisible: true
+                    property bool noteWidgetIsVisible: true
+
+                    Component.onCompleted: {
+
+                    }
                 }
             }
 

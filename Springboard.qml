@@ -5,7 +5,7 @@ import QtQuick.Controls.Styles 1.4
 import QtQuick.Layouts 1.12
 import QtQuick.Window 2.2
 import QtGraphicalEffects 1.12
-import QtPositioning 5.13
+import QtPositioning 5.11
 import Qt.labs.settings 1.0
 import FileIO 1.0
 import AndroidNative 1.0 as AN
@@ -42,11 +42,11 @@ LauncherPage {
         shortcutMenu.updateShortcuts(mainView.getActions())
         var eventRegexStr = "^("
         for (var i = 0; i < eventGlossar.length; i++) {
-            eventRegexStr = eventRegexStr.concat(eventGlossar[i])
+            eventRegexStr = eventRegexStr.concat(eventGlossar[i].toLowerCase())
             if (i < eventGlossar.length - 1) eventRegexStr = eventRegexStr.concat("|")
         }
-        eventRegexStr = eventRegexStr.concat(")\\s(\\d{1,2}\\:?\\d{0,2})?-?(\\d{1,2}\\:?\\d{0,2})?\\s?(am|pm|uhr\\s)?(\\S(.*\\n?)*)")
-        eventRegex = new RegExp(eventRegexStr, "gim")
+        eventRegexStr = eventRegexStr.concat(")\\s(\\d{1,2}\\:?\\d{0,2})\\s?(am|pm|uhr)?(\\s-\\s)?(\\d{1,2}\\:?\\d{0,2})?\\s(am|pm|uhr)?\\s?(\\S(.*\\n?)*)")
+        eventRegex = new RegExp(eventRegexStr, "im")
 
         var installedPlugins = mainView.getInstalledPlugins()
         for (i = 0; i < installedPlugins.length; i++) {
@@ -58,7 +58,11 @@ LauncherPage {
         target: Qt.inputMethod
 
         onKeyboardRectangleChanged: {
-            console.log("Springboard | Keyboard rectangle: " + Qt.inputMethod.keyboardRectangle)
+            console.debug("Springboard | Keyboard rectangle: " + Qt.inputMethod.keyboardRectangle + ", focus: " + textInputArea.activeFocus)
+            if (Qt.rect(0, 0, 0, 0) === Qt.inputMethod.keyboardRectangle && textInputArea.activeFocus) {
+                console.debug("Springboard | Reactivate keyboard")
+                Qt.inputMethod.show()
+            }
         }
     }
 
@@ -79,6 +83,24 @@ LauncherPage {
             shortcutMenu.executeSelection()
             shortcutMenu.selectedMenuItem = rootMenuButton
             shortcutMenu.height = dotShortcut ? mainView.innerSpacing * 4 : mainView.innerSpacing * 3
+        }
+    }
+
+    function updateWidgets(widgetId, isVisible) {
+        widgetsSettings.sync()
+
+        switch (widgetId) {
+            case 0:
+                widgetsSettings.weatherWidgetIsVisible = isVisible
+                break
+            case 1:
+                widgetsSettings.clockWidgetIsVisible = isVisible
+                break
+            case 2:
+                widgetsSettings.noteWidgetIsVisible = isVisible
+                break
+            default:
+                break
         }
     }
 
@@ -308,66 +330,63 @@ LauncherPage {
 
             function parseAndSaveEvent() {
                 var d = new Date()
-                var pattern1 = /^(\d{1,2})\.(\d{1,2})\.(\d{2,4})?\s(\d{1,2}\:?\d{0,2})?-?(\d{1,2}\:?\d{0,2})?\s?(am|pm|uhr\s)?(\S.*)/gim
-                var pattern2 = /^(\d{2,4})\/(\d{1,2})\/(\d{1,2})?\s(\d{1,2}\:?\d{0,2})?-?(\d{1,2}\:?\d{0,2})?\s?(am|pm|uhr\s)?(\S.*)/gim
+
                 if (eventRegex.test(textInput)) {
+                    console.debug("Springboard | Inpus: " + textInput)
+                    var matches = eventRegex.exec(textInput)
+                    for (var i = 0; i < matches.length; i++) {
+                        console.debug("Springboard | " + i + " group: " + matches[i])
+                    }
                     var day = d.getDay()
-                     var plannedDay = eventGlossar.indexOf(textInput.replace(eventRegex, '$1'))
+                    var plannedDay = eventGlossar.indexOf(matches[0].toLowerCase())
                     var daysToAdd = plannedDay > day ? plannedDay - day : 7 - plannedDay
                     if (daysToAdd === 8) daysToAdd = 1
                     var eventDate = new Date()
                     eventDate.setDate(eventDate.getDate() + daysToAdd)
-                    console.debug("Springboard | eventDate: " + eventDate)
                     var year = eventDate.getFullYear()
                     var date = eventDate.getDate()
                     var month = eventDate.getMonth()
-                    var beginhour = textInput.replace(eventRegex, '$2') !== "" ?
-                                parseInt(textInput.replace(eventRegex, '$2').split(":")[0]) : -1
-                    var beginMinute = beginhour > - 1 && textInput.replace(eventRegex, '$2').split(":")[1] !== undefined ?
-                                parseInt(textInput.replace(eventRegex, '$2').split(":")[1]) : 0
-                    var endHour = textInput.replace(eventRegex, '$3') !== "" ?
-                                parseInt(textInput.replace(eventRegex, '$3').split(":")[0]) : -1
-                    var endMinute = beginhour > - 1 && textInput.replace(eventRegex, '$3').split(":")[1] !== undefined ?
-                                parseInt(textInput.replace(eventRegex, '$3').split(":")[1]) : 0
+                    var beginhour = matches[1] !== undefined ? parseInt(matches[1].split(":")[0]) : -1
+                    var beginMinute = beginhour > - 1 && matches[1].split(":")[1] !== undefined ? parseInt(matches[1].split(":")[1]) : 0
+                    var endHour = matches[5] !== undefined ? parseInt(matches[5].split(":")[0]) : -1
+                    var endMinute = beginhour > - 1 && matches[5].split(":")[1] !== undefined ? parseInt(matches[5].split(":")[1]) : 0
                     if (beginhour > -1 && endHour < 0) {
                         endHour = beginhour + 1
                         endMinute = beginMinute
                     }
-                    if (textInput.replace(eventRegex, '$4').toLocaleLowerCase() === "pm") {
-                        beginhour = beginhour + 12
-                        endHour = endHour + 12
-                    }
+                    if (matches[3] !== undefined && matches[3].toLowerCase === "pm") beginhour = beginhour + 12
+                    if (matches[6] !== undefined && matches[6].toLowerCase === "pm") endHour = endHour + 12
                     var allDay = beginhour < 0
-                    var title = textInput.replace(eventRegex, '$5').split("\n",2)[0]
-                    var description = textInput.replace(eventRegex, '$5').split("\n",2)[1] !== undefined ?
-                                textInput.replace(eventRegex, '$5').split("\n",2)[1] : ""
+                    var title = matches[7] !== undefined ? matches[7].split("\n",2)[0]: ""
+                    var description = matches[7] !== undefined && matches[7].split("\n",2)[1] !== undefined ? matches[7].split("\n",2)[1] : ""
                 } else {
+                    var pattern1 = /^(\d{1,2})\.(\d{1,2})\.(\d{2,4})?\s(\d{1,2}\:?\d{0,2})?\s?(am|pm|uhr)?(\s?-\s?)?(\d{1,2}\:?\d{0,2})?\s?(am|pm|uhr)?\s?(\S(.*\n?)*)/im
+                    var pattern2 = /^(\d{2,4})\/(\d{1,2})\/(\d{1,2})?\s(\d{1,2}\:?\d{0,2})?\s?(am|pm|uhr)?(\s?-\s?)?(\d{1,2}\:?\d{0,2})?\s?(am|pm|uhr)?\s?(\S(.*\n?)*)/im
                     var pattern = pattern1.test(textInput) ? pattern1 : pattern2
-                    date = parseInt(textInput.replace(pattern, '$1'))
-                    month = parseInt(textInput.replace(pattern, '$2')) - 1
-                    year = textInput.replace(pattern, '$3') === "" ?
-                                d.getFullYear() : parseInt(textInput.replace(pattern, '$3'))
+                    matches = pattern.exec(textInput)
+                    for (i = 0; i < matches.length; i++) {
+                        console.debug("Springboard | " + i + " group: " + matches[i])
+                    }
+                    date = parseInt(matches[1])
+                    month = parseInt(matches[2]) - 1
+                    year = matches[3] === undefined ? d.getFullYear() : parseInt(matches[3])
                     if (year < 100) year = 2000 + year
-                    beginhour = textInput.replace(pattern, '$4') !== "" ?
-                                parseInt(textInput.replace(pattern, '$4').split(":")[0]) : -1
-                    beginMinute = beginhour > - 1 && textInput.replace(pattern, '$4').split(":")[1] !== undefined ?
-                                parseInt(textInput.replace(pattern, '$4').split(":")[1]) : 0
-                    endHour = textInput.replace(pattern, '$5') !== "" ?
-                                parseInt(textInput.replace(pattern, '$5').split(":")[0]) : -1
-                    endMinute = beginhour > - 1 && textInput.replace(pattern, '$5').split(":")[1] !== undefined ?
-                                parseInt(textInput.replace(pattern, '$5').split(":")[1]) : 0
+                    beginhour = matches[4] !== undefined ? parseInt(matches[4].split(":")[0]) : -1
+                    beginMinute = beginhour > - 1 && matches[4].split(":")[1] !== undefined ? parseInt(matches[4].split(":")[1]).split(":")[1] : 0
+                    if (matches[5] !== undefined && matches[5].toLowerCase() === "pm") beginhour = beginhour + 12
+                    endHour = matches[7]  !== undefined ? parseInt(matches[7].split(":")[0]) : -1
+                    endMinute = endHour > - 1 && matches[6].split(":")[1] !== undefined ? parseInt(matches[6].split(":")[1]) : 0
+                    if (matches[8] !== undefined && matches[8].toLowerCase() === "pm") {
+                        if (matches[5] === undefined) beginhour = beginhour + 12
+                        endHour = endHour + 12
+                    }
                     if (beginhour > -1 && endHour < 0) {
                         endHour = beginhour + 1
                         endMinute = beginMinute
-                    }
-                    if (textInput.replace(pattern, '$6').toLocaleLowerCase() === "pm") {
-                        beginhour = beginhour + 12
-                        endHour = endHour + 12
                     }
                     allDay = beginhour < 0
-                    title = textInput.replace(pattern, '$7').split("\n",2)[0]
-                    description = textInput.replace(pattern, '$7').split("\n",2)[1] !== undefined ?
-                                textInput.replace(pattern, '$7').split("\n",2)[1] : ""
+                    title = matches[9] !== undefined ? matches[9].split("\n",2)[0] : ""
+                    description = title.split("\n",2)[1] !== undefined ? title.split("\n",2)[1] : ""
                 }
 
                 if (!allDay) {
@@ -513,6 +532,9 @@ LauncherPage {
                             break
                         case mainView.searchMode.MetaGer:
                             Qt.openUrlExternally("https://metager.de/meta/meta.ger3?eingabe=" + message + "&ref=hellovolla")
+                            break
+                        case mainView.searchMode.Custom:
+                            Qt.openUrlExternally(mainView.searchEngineUrl + message)
                             break
                         default:
                             Qt.openUrlExternally("https://duck.com?q=" + message)
@@ -842,6 +864,7 @@ LauncherPage {
             border.color: "grey"
             width: widgetsFlow.sideLength
             height: widgetsFlow.sideLength
+            visible: widgetsSettings.weatherWidgetIsVisible
 
             property string apiKey: "488297aabb1676640ac7fc10a6c5a2d1"
             property string city: weatherSettings.city
@@ -852,7 +875,7 @@ LauncherPage {
             PositionSource {
                 id: src
                 updateInterval: 60000
-                active: widgetsFlow.visible && !weatherWidget.isManuallyDefined
+                active: true
 
                 function roundNumber(num, dec) {
                   return Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec)
@@ -862,12 +885,15 @@ LauncherPage {
                     var coord = src.position.coordinate
                     var newLongitude = roundNumber(coord.longitude, 3)
                     var newLatitude = roundNumber(coord.latitude, 3)
-                    if ((coord.isValid && (Math.abs(mainView.longitude - newLongitude) >= 0.10
-                                           || Math.abs(mainView.latitude - newLatitude) >= 0.10))
-                        || (!coord.isValid && dayTemperatures.text.length === 0)) {
+                    console.debug("Widget | Position changed")
+                    console.debug("Widget | PositionSource isActive: " + src.active)
+                    console.debug("Widget | Position isManuallyDefinded: " + weatherWidget.isManuallyDefined)
+                    console.debug("Widget | isValid: " + coord.isValid)
+                    console.debug("Widget | coord: " + coord.longitude + ", " + coord.latitude)
+                    if (weatherWidget.visible && !weatherWidget.isManuallyDefined && coord.isValid &&
+                        (Math.abs(mainView.longitude - newLongitude) >= 0.10 || Math.abs(mainView.latitude - newLatitude) >= 0.10)) {
                         console.debug("Widget | Will update weather")
-                        //console.debug("Widget | isValid: " + coord.isValid)
-                        //console.debug("Widget | new ccord: " + coord.longitude + ", " + coord.latitude)
+
                         weatherWidget.latitude = coord.latitude;
                         weatherWidget.longitude = coord.longitude;
                         console.debug("Widget | new ccord: " + newLongitude + ", " + newLatitude)
@@ -995,13 +1021,15 @@ LauncherPage {
                              weatherWidget.city = model.city
                              weatherWidget.longitude = model.lon
                              weatherWidget.latitude = model.lat
-                             locatioDialog.close()
-                             locationModel.clear()
-                             weatherWidget.getWeather()
+                             weatherSettings.isManuallyDefined = true
                              weatherSettings.city = model.city
                              weatherSettings.longitude = model.lon
                              weatherSettings.latitude = model.lat
                              weatherSettings.sync()
+                             console.debug("Widget | Setting saved: " + weatherSettings.city)
+                             weatherWidget.getWeather()
+                             locatioDialog.close()
+                             locationModel.clear()
                          }
                      }
 
@@ -1062,7 +1090,6 @@ LauncherPage {
                              console.debug("Widget | Geo location response: " + geoRequest.status)
                              if (geoRequest.status === 200) {
                                  var geoLocations = new Array
-                                 console.debug("Widget | Location response " + geoRequest.responseText)
                                  var cities = JSON.parse(geoRequest.responseText)
                                  var locale = Qt.locale().name.split('_')[0]
                                  for (var i = 0; i < cities.length; i++) {
@@ -1113,7 +1140,7 @@ LauncherPage {
 
             function getWeather() {
                 console.debug("Widget | Will request weather")
-                var weatherUrl = "https://api.openweathermap.org/data/3.0/onecall?lat=" + weatherWidget.latitude
+                var weatherUrl = "https://api.openweathermap.org/data/2.5/weather?lat=" + weatherWidget.latitude
                         + "&lon=" + weatherWidget.longitude + "&units=metric&appid=" + apiKey
                 console.debug("Widget | Servie URL " + weatherUrl)
                 var weatherRequest = new XMLHttpRequest()
@@ -1122,9 +1149,9 @@ LauncherPage {
                         console.debug("Widget | Weather response: " + weatherRequest.status)
                         if (weatherRequest.status === 200) {
                             var weather = JSON.parse(weatherRequest.responseText)
-                            weatherImage.source = "https://openweathermap.org/img/wn/" + weather.current.weather[0].icon + "@2x.png"
-                            recentTemperature.text = weather.current.temp + "°C"
-                            dayTemperatures.text = weather.daily[0].temp.min + "°C  " + weather.daily[0].temp.max + "°C"
+                            weatherImage.source = "https://openweathermap.org/img/wn/" + weather.weather[0].icon + "@2x.png"
+                            recentTemperature.text = weather.main.temp + "°C"
+                            dayTemperatures.text = weather.main.temp_min + "°C - " + weather.main.temp_max + "°C"
                         } else {
                             console.error("Widget | Error retrieving weather: ", weatherRequest.status, weatherRequest.statusText)
                         }
@@ -1137,9 +1164,11 @@ LauncherPage {
             Timer {
                 id: weather30MinuteTimer
                 interval: 1800000  // 30 minutes in milliseconds (30 * 60 * 1000)
-                repeat: widgetsFlow.visible      // Set to true to repeat every 30 minutes
-                running: widgetsFlow.visible     // Start the timer immediately
+                repeat: weatherWidget.visible      // Set to true to repeat every 30 minutes
+                running: weatherWidget.visible     // Start the timer immediately
+                triggeredOnStart: true
                 onTriggered: {
+                    console.debug("Widget | Weather triggered")
                     weatherWidget.getWeather();  // Call the function to execute service
                 }
             }
@@ -1147,12 +1176,14 @@ LauncherPage {
             Settings {
                 id: weatherSettings
                 property string city: "Remscheid"
-                property double longitude: 51.1798
-                property double latitude: 7.1925
+                property double longitude: 7.1925
+                property double latitude: 51.1798
                 property bool isManuallyDefined: false
 
-                Component.objectName: {
+                Component.onCompleted: {
+                    weatherWidget.isManuallyDefined = weatherSettings.isManuallyDefined
                     if (weatherSettings.isManuallyDefined && weatherWidget.city !== weatherSettings.city) {
+                        console.debug("Widget | Settings. Update city property: " + weatherSettings.city)
                         weatherWidget.city = weatherSettings.city
                         weatherWidget.longitude = weatherSettings.longitude
                         weatherWidget.latitude = weatherSettings.latitude
@@ -1168,6 +1199,7 @@ LauncherPage {
             border.color: "grey"
             width: widgetsFlow.sideLength
             height: widgetsFlow.sideLength
+            visible: widgetsSettings.clockWidgetIsVisible
 
             // todo
             Clock {
@@ -1183,6 +1215,7 @@ LauncherPage {
             border.color: "grey"
             width: widgetsFlow.sideLength
             height: widgetsFlow.sideLength
+            visible: widgetsSettings.noteWidgetIsVisible
 
             property var note
 
@@ -1244,6 +1277,31 @@ LauncherPage {
                     }
                 }
             }
+        }
+
+        Settings {
+            id: widgetsSettings
+            property bool clockWidgetIsVisible: true
+            property bool weatherWidgetIsVisible: true
+            property bool noteWidgetIsVisible: true
+
+            onClockWidgetIsVisibleChanged: {
+                console.debug("Springborad | Clock widget visibility changed to " + clockWidgetIsVisible)
+            }
+
+            onWeatherWidgetIsVisibleChanged: {
+                console.debug("Springborad | Weather widget visibility changed to " + weatherWidgetIsVisible)
+            }
+
+            onNoteWidgetIsVisibleChanged: {
+                console.debug("Springborad | Note widget visibility changed to " + noteWidgetIsVisible)
+            }
+
+//            Component.onCompleted: {
+//                weatherWidget.visible = weatherWidgetIsVisible
+//                clockWidget.visible = clockWidgetIsVisible
+//                noteWidget.visible = noteWidgetIsVisible
+//            }
         }
     }
 
