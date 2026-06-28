@@ -33,6 +33,62 @@ CheckBox {
         verticalAlignment: Text.AlignVCenter
     }
 
+    FontLoader {
+        source: "qrc:/fonts/Poppins-Regular.ttf"
+    }
+
+    FontLoader {
+        source: "qrc:/fonts/Poppins-Bold.ttf"
+    }
+
+    FontLoader {
+        source: "qrc:/fonts/Poppins-Italic.ttf"
+    }
+
+    FontLoader {
+        source: "qrc:/fonts/selawk.ttf"
+    }
+
+    FontLoader {
+        source: "qrc:/fonts/selawkb.ttf"
+    }
+
+    FontLoader {
+        source: "qrc:/fonts/Lato-Regular.ttf"
+    }
+
+    FontLoader {
+        source: "qrc:/fonts/Lato-Bold.ttf"
+    }
+
+    FontLoader {
+        source: "qrc:/fonts/Lato-Italic.ttf"
+    }
+
+    FontLoader {
+        source: "qrc:/fonts/Rubik-Regular.ttf"
+    }
+
+    FontLoader {
+        source: "qrc:/fonts/Rubik-Bold.ttf"
+    }
+
+    FontLoader {
+        source: "qrc:/fonts/Rubik-Italic.ttf"
+    }
+
+    FontLoader {
+        source: "qrc:/fonts/IBMPlexSans-Regular.ttf"
+    }
+
+    FontLoader {
+        source: "qrc:/fonts/IBMPlexSans-Bold.ttf"
+    }
+
+    FontLoader {
+        source: "qrc:/fonts/IBMPlexSans-Italic.ttf"
+    }
+
     Button {
         id: removeButton
         anchors.right: parent.right

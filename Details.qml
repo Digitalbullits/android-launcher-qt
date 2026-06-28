@@ -213,7 +213,7 @@ LauncherPage {
         var styledText = note.slice()
         var urlRegex = /(((https?:\/\/)|([^\s]+\.))[^\s,]+)/g;
         styledText = styledText.replace(urlRegex, function(url,b,c) {
-            var url2 = !c.startsWith('http') ?  'http://' + url : url;
+            var url2 = !c.startsWith('http') ?  'https://' + url : url;
             return '<a href="' +url2+ '" target="_blank">' + url + '</a>';
         })
 
@@ -271,7 +271,7 @@ LauncherPage {
                 font.weight: Font.Black
                 topPadding: mainView.innerSpacing
                 color: Universal.foreground
-                wrapMode: Text.WordWrap
+                wrapMode: Text.WrapAtWordBoundaryOrAnywhere
             }
             Label {
                 id: author
@@ -413,7 +413,6 @@ LauncherPage {
                 console.log("DetailPage | title: " + message.title)
                 console.log("DetailPage | image: " + message.imageUrl)
                 console.log("DetailPage | video: " + message.videoUrl)
-//                console.log("DetailPage | html: " + message.html)
 
                 title.text = currentTitle !== undefined ? currentTitle : message.title
 
@@ -422,7 +421,6 @@ LauncherPage {
                     html = html.replace("</h1>", "</strong>")
                     html = html.replace(/((<p>){2,})/g, "<p>")
                     html = html.replace(/((<\/p>){2,})/g, "</p>")
-//                    console.log("DetailPage | html: " + html)
 
                     text.text = html
                 }

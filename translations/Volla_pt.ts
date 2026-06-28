@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="bg_BG">
+<TS version="2.1" language="pt_PT">
 <context>
     <name>AppGrid</name>
     <message>
         <source>Apps</source>
-        <translation></translation>
+        <translation>Aplicações</translation>
     </message>
     <message>
         <source>Filter apps</source>
-        <translation></translation>
+        <translation>Filtrar aplicações</translation>
     </message>
     <message>
         <source>Add to shortcuts</source>
-        <translation></translation>
+        <translation>Adicionar aos atalhos</translation>
     </message>
     <message>
         <source>Open</source>
-        <translation></translation>
+        <translation>Abrir</translation>
     </message>
     <message>
         <source>Open App</source>
-        <translation></translation>
+        <translation>Abrir aplicação</translation>
     </message>
     <message>
         <source>Remove Shortcut</source>
@@ -37,11 +37,11 @@
     </message>
     <message>
         <source>apps</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">aplicativos</translation>
     </message>
     <message>
         <source>Other apps</source>
-        <translation type="unfinished">Other apps</translation>
+        <translation type="unfinished">Outras aplicações</translation>
     </message>
     <message>
         <source>New pinned shortcut</source>
@@ -57,7 +57,65 @@
     </message>
     <message>
         <source>Remove App</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Usuń aplikację</translation>
+    </message>
+    <message>
+        <source>Add to new group</source>
+        <translation type="unfinished">Adicionar a novo grupo</translation>
+    </message>
+    <message>
+        <source>Remove from group</source>
+        <translation type="unfinished">Usuń z grupy</translation>
+    </message>
+    <message>
+        <source>Use custom groups</source>
+        <translation type="unfinished">Użyj grup niestandardowych</translation>
+    </message>
+    <message>
+        <source>Remove group</source>
+        <translation type="unfinished">Usuń grupę</translation>
+    </message>
+    <message>
+        <source>Edit groupname</source>
+        <translation type="unfinished">Edit groupname</translation>
+    </message>
+    <message>
+        <source>Group name</source>
+        <translation type="unfinished">Nazwa grupy</translation>
+    </message>
+    <message>
+        <source>Enter a group name</source>
+        <translation type="unfinished">Wpisz nazwę grupy</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Cancelar</translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation type="unfinished">Está bem</translation>
+    </message>
+    <message>
+        <source>Group name must have at least one character.</source>
+        <translation type="unfinished">Nazwa grupy musi zawierać co najmniej jeden znak.</translation>
+    </message>
+</context>
+<context>
+    <name>AppGridMenuItem</name>
+    <message>
+        <source>Add to </source>
+        <translation type="unfinished">Adicionar a </translation>
+    </message>
+    <message>
+        <source>Favorits</source>
+        <translation type="unfinished">Favoritos</translation>
+    </message>
+</context>
+<context>
+    <name>AppGroup</name>
+    <message>
+        <source>Favorits</source>
+        <translation type="unfinished">Favoritos</translation>
     </message>
 </context>
 <context>
@@ -71,79 +129,79 @@
     <name>Collections</name>
     <message>
         <source>People</source>
-        <translation></translation>
+        <translation>Pessoas</translation>
     </message>
     <message>
         <source>Find people ...</source>
-        <translation></translation>
+        <translation>Encontre pessoas...</translation>
     </message>
     <message>
         <source>Threads</source>
-        <translation></translation>
+        <translation>Tópicos</translation>
     </message>
     <message>
         <source>Find thread ...</source>
-        <translation></translation>
+        <translation>Encontrar tópico...</translation>
     </message>
     <message>
         <source>News</source>
-        <translation></translation>
+        <translation>Notícias</translation>
     </message>
     <message>
         <source>Find news ...</source>
-        <translation></translation>
+        <translation>Encontre notícias...</translation>
     </message>
     <message>
         <source>Filter collections</source>
-        <translation></translation>
+        <translation>Coleções de filtros</translation>
     </message>
     <message>
         <source>Call</source>
-        <translation></translation>
+        <translation>Ligar</translation>
     </message>
     <message>
         <source>Send Message</source>
-        <translation></translation>
+        <translation>Enviar mensagem</translation>
     </message>
     <message>
         <source>Send Email</source>
-        <translation></translation>
+        <translation>Enviar e-mail</translation>
     </message>
     <message>
         <source>Open Contact</source>
-        <translation></translation>
+        <translation>Abrir contacto</translation>
     </message>
     <message>
         <source>Private</source>
-        <translation></translation>
+        <translation>Privado</translation>
     </message>
     <message>
         <source>New message</source>
-        <translation></translation>
+        <translation>Nova mensagem</translation>
     </message>
     <message>
         <source>New calls</source>
-        <translation></translation>
+        <translation>Novas chamadas</translation>
     </message>
     <message>
         <source>New call</source>
-        <translation></translation>
+        <translation>Nova chamada</translation>
     </message>
     <message>
         <source>You</source>
-        <translation></translation>
+        <translation>Você</translation>
     </message>
     <message>
         <source>Could not load RSS feed: </source>
-        <translation></translation>
+        <translation>Não foi possível carregar o feed RSS: </translation>
     </message>
     <message>
         <source>Invalid RSS feed: </source>
-        <translation></translation>
+        <translation>Feed RSS inválido: </translation>
     </message>
     <message>
         <source>Missing RSS item: </source>
-        <translation></translation>
+        <translation>Item RSS em falta: </translation>
     </message>
     <message>
         <source>Notes</source>
@@ -162,19 +220,19 @@
     <name>Conversation</name>
     <message>
         <source>Conversation</source>
-        <translation></translation>
+        <translation>Conversa</translation>
     </message>
     <message>
         <source>Filter messages ...</source>
-        <translation></translation>
+        <translation>Filtrar mensagens...</translation>
     </message>
     <message>
         <source>Type your message</source>
-        <translation></translation>
+        <translation>Digite a sua mensagem</translation>
     </message>
     <message>
         <source>Not yet supported</source>
-        <translation></translation>
+        <translation>Ainda não suportado</translation>
     </message>
     <message>
         <source>Message not sent</source>
@@ -182,22 +240,22 @@
     </message>
     <message>
         <source>Attached image is not available for preview</source>
-        <translation type="unfinished">imagem não disponível para pré-visualização</translation>
+        <translation type="unfinished">Imagem não disponível para pré-visualização</translation>
     </message>
 </context>
 <context>
     <name>Details</name>
     <message>
         <source>Not yet supported</source>
-        <translation></translation>
+        <translation>Ainda não suportado</translation>
     </message>
     <message>
         <source>Open in browser</source>
-        <translation></translation>
+        <translation>Abrir no navegador</translation>
     </message>
     <message>
         <source>Share</source>
-        <translation></translation>
+        <translation>Partilhar</translation>
     </message>
 </context>
 <context>
@@ -208,11 +266,11 @@
     </message>
     <message>
         <source>Filter news ...</source>
-        <translation></translation>
+        <translation>Filtrar notícias...</translation>
     </message>
     <message>
         <source>Not yet supported</source>
-        <translation></translation>
+        <translation>Ainda não suportado</translation>
     </message>
 </context>
 <context>
@@ -262,27 +320,27 @@
     <name>Settings</name>
     <message>
         <source>Settings</source>
-        <translation></translation>
+        <translation>Configurações</translation>
     </message>
     <message>
         <source>Dark Mode</source>
-        <translation></translation>
+        <translation>Modo escuro</translation>
     </message>
     <message>
         <source>Light Mode</source>
-        <translation></translation>
+        <translation>Modo claro</translation>
     </message>
     <message>
         <source>News Channels</source>
-        <translation></translation>
+        <translation>Canais de notícias</translation>
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation></translation>
+        <translation>Atalhos</translation>
     </message>
     <message>
         <source>Search engines</source>
-        <translation></translation>
+        <translation>Motores de busca</translation>
     </message>
     <message>
         <source>DuckDuckGo</source>
@@ -298,27 +356,27 @@
     </message>
     <message>
         <source>Fullscreen</source>
-        <translation></translation>
+        <translation>Ecrã inteiro</translation>
     </message>
     <message>
         <source>Use colored app icons</source>
-        <translation></translation>
+        <translation>Use ícones coloridos para as aplicações</translation>
     </message>
     <message>
         <source>Show apps at startup</source>
-        <translation></translation>
+        <translation>Mostrar aplicações ao iniciar</translation>
     </message>
     <message>
         <source>Use haptic menus</source>
-        <translation></translation>
+        <translation>Utilizar menus táteis</translation>
     </message>
     <message>
         <source>Background blur</source>
-        <translation></translation>
+        <translation>Desfoque do fundo</translation>
     </message>
     <message>
         <source>Open</source>
-        <translation type="unfinished">Aberto</translation>
+        <translation type="unfinished">Abrir</translation>
     </message>
     <message>
         <source>Display and menus</source>
@@ -362,7 +420,7 @@
     </message>
     <message>
         <source>Ok</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Está bem</translation>
     </message>
     <message>
         <source>Wrong password confirmation</source>
@@ -374,7 +432,7 @@
     </message>
     <message>
         <source>Show grouped apps</source>
-        <translation type="unfinished">Mostrar aplicações agrupadas</translation>
+        <translation type="obsolete">Mostrar aplicações agrupadas</translation>
     </message>
     <message>
         <source>Use app categories</source>
@@ -406,23 +464,23 @@
     </message>
     <message>
         <source>Couldn&apos;t load available plugins</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Não foi possível carregar os plugins disponíveis</translation>
     </message>
     <message>
         <source>Password needs at least four characters or numbers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">A palavra-passe deve ter pelo menos quatro caracteres ou números</translation>
     </message>
     <message>
         <source>Weather</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Clima</translation>
     </message>
     <message>
         <source>Clock</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Relógio</translation>
     </message>
     <message>
         <source>Note</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nota</translation>
     </message>
     <message>
         <source>Widgets</source>
@@ -436,40 +494,80 @@
         <source>Light Translucent Mode</source>
         <translation type="unfinished">Modo translúcido claro</translation>
     </message>
+    <message>
+        <source>Show frequently used apps</source>
+        <translation type="unfinished">Mostrar aplicações utilizadas com frequência</translation>
+    </message>
+    <message>
+        <source>Left-handed quick menu</source>
+        <translation type="unfinished">Menu rápido para canhotos</translation>
+    </message>
+    <message>
+        <source>Accent Color</source>
+        <translation type="unfinished">Cor de destaque</translation>
+    </message>
+    <message>
+        <source>Choose Accent Color</source>
+        <translation type="unfinished">Escolha a cor de destaque</translation>
+    </message>
+    <message>
+        <source>Reset to Default</source>
+        <translation type="unfinished">Redefinir para os padrões</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished">Fechar</translation>
+    </message>
+    <message>
+        <source>Show app names</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keep the wallpaper unchanged</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dialer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restart app</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Springboard</name>
     <message>
         <source>Springboard</source>
-        <translation></translation>
+        <translation>Trampolim</translation>
     </message>
     <message>
         <source>Type anything</source>
-        <translation></translation>
+        <translation>Digite qualquer coisa</translation>
     </message>
     <message>
         <source>Sorry. I couldn&apos;t find a phone number for this contact</source>
-        <translation></translation>
+        <translation>Desculpe. Não consegui encontrar um número de telefone para este contacto.</translation>
     </message>
     <message>
         <source>Sorry. I couldn&apos;t identify the contact</source>
-        <translation></translation>
+        <translation>Desculpe. Não consegui identificar o contacto.</translation>
     </message>
     <message>
         <source>Sorry, no contact was selected</source>
-        <translation></translation>
+        <translation>Desculpe, nenhum contacto foi selecionado.</translation>
     </message>
     <message>
         <source>Sorry, the mobile phone number is unknown</source>
-        <translation></translation>
+        <translation>Desculpe, o número de telemóvel é desconhecido.</translation>
     </message>
     <message>
         <source>Sorry. Contact has no email address</source>
-        <translation></translation>
+        <translation>Desculpe. O contacto não tem endereço de e-mail.</translation>
     </message>
     <message>
         <source>My event</source>
-        <translation></translation>
+        <translation>O meu evento</translation>
     </message>
     <message>
         <source>Monday</source>
@@ -517,19 +615,31 @@
     </message>
     <message>
         <source>weather</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">clima</translation>
     </message>
     <message>
         <source>Set location</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Definir localização</translation>
     </message>
     <message>
         <source>Enter any location</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Insira um local</translation>
     </message>
     <message>
         <source>x</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There was no outgoing call in the last days.</source>
+        <translation type="unfinished">Não houve chamadas efetuadas nos últimos dias.</translation>
+    </message>
+    <message>
+        <source>New contact saved</source>
+        <translation type="unfinished">Novo contacto guardado</translation>
+    </message>
+    <message>
+        <source>Speed dial</source>
+        <translation type="unfinished">Discagem rápida</translation>
     </message>
 </context>
 <context>
@@ -544,7 +654,7 @@
     </message>
     <message>
         <source>Ok</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Está bem</translation>
     </message>
 </context>
 <context>
@@ -555,79 +665,79 @@
     </message>
     <message>
         <source>Send message</source>
-        <translation></translation>
+        <translation>Enviar mensagem</translation>
     </message>
     <message>
         <source>Send email</source>
-        <translation></translation>
+        <translation>Enviar e-mail</translation>
     </message>
     <message>
         <source>Send home email</source>
-        <translation></translation>
+        <translation>Enviar e-mail para casa</translation>
     </message>
     <message>
         <source>Send work email</source>
-        <translation></translation>
+        <translation>Enviar e-mail de trabalho</translation>
     </message>
     <message>
         <source>Send other email</source>
-        <translation></translation>
+        <translation>Enviar outro e-mail</translation>
     </message>
     <message>
         <source>Call</source>
-        <translation></translation>
+        <translation>Ligar</translation>
     </message>
     <message>
         <source>Call on cell phone</source>
-        <translation></translation>
+        <translation>Ligar para o telemóvel</translation>
     </message>
     <message>
         <source>Call at home</source>
-        <translation></translation>
+        <translation>Ligar para casa</translation>
     </message>
     <message>
         <source>Call at work</source>
-        <translation></translation>
+        <translation>Ligar no trabalho</translation>
     </message>
     <message>
         <source>Call other phone</source>
-        <translation></translation>
+        <translation>Ligar para outro telefone</translation>
     </message>
     <message>
         <source>Create note</source>
-        <translation></translation>
+        <translation>Criar nota</translation>
     </message>
     <message>
         <source>Search web</source>
-        <translation></translation>
+        <translation>Pesquisar na web</translation>
     </message>
     <message>
         <source>Open in browser</source>
-        <translation></translation>
+        <translation>Abrir no navegador</translation>
     </message>
     <message>
         <source>Add feed to collection</source>
-        <translation></translation>
+        <translation>Adicionar feed à coleção</translation>
     </message>
     <message>
         <source>Open Contact</source>
-        <translation></translation>
+        <translation>Abrir contacto</translation>
     </message>
     <message>
         <source>Missing message text</source>
-        <translation></translation>
+        <translation>Texto da mensagem em falta</translation>
     </message>
     <message>
         <source>Message sent</source>
-        <translation></translation>
+        <translation>Mensagem enviada</translation>
     </message>
     <message>
         <source>Generic failure</source>
-        <translation></translation>
+        <translation>Falha genérica</translation>
     </message>
     <message>
         <source>No service</source>
-        <translation></translation>
+        <translation>Sem serviço</translation>
     </message>
     <message>
         <source>Null PDU</source>
@@ -635,75 +745,75 @@
     </message>
     <message>
         <source>Radio off</source>
-        <translation></translation>
+        <translation>Rádio desligado</translation>
     </message>
     <message>
         <source>Message delivered</source>
-        <translation></translation>
+        <translation>Mensagem entregue</translation>
     </message>
     <message>
         <source>Message not delivered</source>
-        <translation></translation>
+        <translation>Mensagem não entregue</translation>
     </message>
     <message>
         <source>Show Dialer</source>
-        <translation></translation>
+        <translation>Mostrar Discador</translation>
     </message>
     <message>
         <source>Camera</source>
-        <translation></translation>
+        <translation>Câmara</translation>
     </message>
     <message>
         <source>Gallery</source>
-        <translation></translation>
+        <translation>Galeria</translation>
     </message>
     <message>
         <source>Agenda</source>
-        <translation></translation>
+        <translation>Agenda</translation>
     </message>
     <message>
         <source>Create Event</source>
-        <translation></translation>
+        <translation>Criar evento</translation>
     </message>
     <message>
         <source>Recent News</source>
-        <translation></translation>
+        <translation>Notícias recentes</translation>
     </message>
     <message>
         <source>Recent Threads</source>
-        <translation></translation>
+        <translation>Tópicos recentes</translation>
     </message>
     <message>
         <source>Recent People</source>
-        <translation></translation>
+        <translation>Pessoas recentes</translation>
     </message>
     <message>
         <source>Just now</source>
-        <translation></translation>
+        <translation>Agora mesmo</translation>
     </message>
     <message>
         <source>minutes ago</source>
-        <translation></translation>
+        <translation>minutos atrás</translation>
     </message>
     <message>
         <source>Today</source>
-        <translation></translation>
+        <translation>Hoje</translation>
     </message>
     <message>
         <source>Yesterday</source>
-        <translation></translation>
+        <translation>Ontem</translation>
     </message>
     <message>
         <source>New Subscrption</source>
-        <translation></translation>
+        <translation>Nova subscrição</translation>
     </message>
     <message>
         <source>You have already subscribed the feed</source>
-        <translation></translation>
+        <translation>Já subscreveu o feed</translation>
     </message>
     <message>
         <source>Invalid news ID</source>
-        <translation></translation>
+        <translation>ID de notícia inválida</translation>
     </message>
     <message>
         <source>Error because of too much redirects</source>
@@ -711,19 +821,19 @@
     </message>
     <message>
         <source>Invalid RSS feed: </source>
-        <translation></translation>
+        <translation>Feed RSS inválido: </translation>
     </message>
     <message>
         <source>New shortcut</source>
-        <translation></translation>
+        <translation>Novo atalho</translation>
     </message>
     <message>
         <source>You have alresdy added the shortcut</source>
-        <translation></translation>
+        <translation>Já adicionou o atalho.</translation>
     </message>
     <message>
         <source>Not yet supported</source>
-        <translation></translation>
+        <translation>Ainda não suportado</translation>
     </message>
     <message>
         <source>Could not load a valid feed</source>
@@ -751,19 +861,19 @@
     </message>
     <message>
         <source>Couldn&apos;t load plugin</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Não foi possível carregar o plugin</translation>
     </message>
     <message>
         <source>Files</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Arquivos</translation>
     </message>
     <message>
         <source>Messages</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mensagens</translation>
     </message>
     <message>
         <source>Music</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Música</translation>
     </message>
     <message>
         <source>Bancontact</source>
@@ -791,11 +901,11 @@
     </message>
     <message>
         <source>Browser</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Navegador</translation>
     </message>
     <message>
         <source>Mail</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Correio</translation>
     </message>
     <message>
         <source>Sync</source>
@@ -807,7 +917,7 @@
     </message>
     <message>
         <source>Store</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Loja</translation>
     </message>
     <message>
         <source>A-Droid</source>
@@ -815,19 +925,31 @@
     </message>
     <message>
         <source>Maps</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mapas</translation>
     </message>
     <message>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Configurações</translation>
     </message>
     <message>
         <source>Radio</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rádio</translation>
     </message>
     <message>
         <source>Weather</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Clima</translation>
+    </message>
+    <message>
+        <source>Redial</source>
+        <translation type="unfinished">Rediscar</translation>
+    </message>
+    <message>
+        <source>Create new contact</source>
+        <translation type="unfinished">Criar novo contacto</translation>
+    </message>
+    <message>
+        <source>Create speed dial</source>
+        <translation type="unfinished">Criar marcação rápida</translation>
     </message>
 </context>
 </TS>

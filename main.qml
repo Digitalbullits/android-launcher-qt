@@ -22,15 +22,14 @@ ApplicationWindow {
 
     Connections {
        target: Qt.application
-       // @disable-check M16
+       // @disable-check M16  
        onStateChanged: {
-          if (Qt.application.state === Qt.ApplicationActive) {              
+          if (Qt.application.state === Qt.ApplicationActive) {
               if (isActive) return
               isActive = true
               // Application go in active state
               console.log("MainView | Application became active")
               if (Qt.fontFamilies().indexOf("Noto Sans") > -1) {
-                  console.debug("APP: Use smaller font size")
                   mainView.headerFontSize = 34.0
                   mainView.largeFontSize = 18.0
                   mainView.mediumFontSize = 16.0
@@ -55,6 +54,8 @@ ApplicationWindow {
               if (mainView.isTablet) AN.SystemDispatcher.dispatch("volla.launcher.runningAppsAction", {})
               // Start onboarding for the first start of the app
               console.log("MainView | First start: " + settings.firstStart)
+              // Check system font
+              AN.SystemDispatcher.dispatch("volla.launcher.fontAction", {})
               // Check new pinned shortcut
               AN.SystemDispatcher.dispatch("volla.launcher.checkNewShortcut", {})
               // Update app grid
@@ -150,7 +151,6 @@ ApplicationWindow {
             'LightTranslucent': 2,
             'DarkTranslucent': 3
         }
-        property var vollaTheme : 1
         property var actionType: {
             'SuggestContact': 0,
             'SuggestPluginEntity' : 1,
@@ -184,17 +184,20 @@ ApplicationWindow {
             'SendSignal' : 20027,
             'OpenSignalContact' : 20028,
             'ExecutePlugin': 20029,
-            'LiveContentPlugin': 20030
+            'LiveContentPlugin': 20030,
+            'Redial': 20031,
+            'CreateContact' : 20032,
+            'CreateSpeedDial' : 20033
         }
         property var actionName: {"SendSMS": qsTr("Send message"), "SendEmail": qsTr("Send email"),
             "SendEmailToHome": qsTr("Send home email"), "SendEmailToWork": qsTr("Send work email"),
-            "SendEmailToOther": qsTr("Send other email"), "MakeCall": qsTr("Call"),
+            "SendEmailToOther": qsTr("Send other email"), "MakeCall": qsTr("Call"), "CreateSpeedDial" : qsTr("Create speed dial"),
             "MakeCallToMobile": qsTr("Call on cell phone"), "MakeCallToHome": qsTr("Call at home"),
             "MakeCallToWork": qsTr("Call at work"), "MakeCallToOther": qsTr("Call other phone"),
-            "CreateNote": qsTr("Create note"), "SearchWeb": qsTr("Search web"),
+            "CreateNote": qsTr("Create note"), "SearchWeb": qsTr("Search web"), "CreateContact" : qsTr("Create new contact"),
             "OpenURL": qsTr("Open in browser"), "AddFeed": qsTr("Add feed to collection"),
             "OpenContact" : qsTr("Open Contact"), "ShowNotes": qsTr("Show Notes"), "SendSignal" : qsTr("Send Signal message"),
-            "CreateEvent" : qsTr("Add to Calender"), "OpenSignalContact": qsTr("Show in Signal")
+            "CreateEvent" : qsTr("Add to Calender"), "OpenSignalContact": qsTr("Show in Signal"), "Redial" : qsTr("Redial")
         }
         property var swipeIndex: {
             'Preferences' : 0,
@@ -217,7 +220,7 @@ ApplicationWindow {
                                       "RadioOff": qsTr("Radio off"),
                                       "MessageDelivered": qsTr("Message delivered"),
                                       "MessageNotDelivered": qsTr("Message not delivered")}
-        property var contacts: new Array
+        property var contacts
         property var notes: new Array
         property var loadingContacts: new Array
         property bool isLoadingContacts: false
@@ -226,11 +229,37 @@ ApplicationWindow {
         property var backgroundOpacity: 1.0
         property var backgroundColor: Universal.background
         property var accentColor: Universal.accent
+        property var accentTextColor: getContrastColor(accentColor)
         property var fontColor: Universal.foreground
+        
+        function getContrastColor(hexColor) {
+            // If no custom accent color is set (default/system color), always use white text
+            if (settings.customAccentColor === "" || settings.customAccentColor.length === 0) {
+                return "white";
+            }
+            
+            // For custom hex colors, calculate proper contrast
+            if (hexColor.startsWith("#")) {
+                var r = parseInt(hexColor.substr(1, 2), 16);
+                var g = parseInt(hexColor.substr(3, 2), 16);
+                var b = parseInt(hexColor.substr(5, 2), 16);
+                
+                // Calculate luminance using WCAG formula
+                var luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+                
+                // Return black for light colors, white for dark colors
+                return luminance > 0.5 ? "black" : "white";
+            }
+            
+            // Fallback for any other case
+            return "white";
+        }
+
         property var vibrationDuration: 50
         property bool useVibration: settings.useHapticMenus
         property bool useColoredIcons: settings.useColoredIcons
         property bool isTablet: Screen.desktopAvailableWidth > 520
+        property bool useLeftHandedMenu: settings.leftHandedMenu
         property int maxTitleLength: 120
 
         property string searchEngineName
@@ -252,7 +281,7 @@ ApplicationWindow {
             "com.simplemobiletools.notes.pro": "/icons/notes@4x.png",
             "com.simplemobiletools.calculator": "/icons/calculator@4x_104x104px.png",
             "org.fossify.phone": "/icons/dial-phone@4x.png",
-            "org.fossify.smsmessenger": "/icons/message@4x.png",
+            "org.fossify.messages": "/icons/message@4x.png",
             "org.fossify.gallery": "/icons/photo-gallery@4x.png",
             "org.fossify.contacts": "/icons/people-contacts-agenda@4x.png",
             "org.fossify.clock": "/icons/clock@4x.png",
@@ -333,7 +362,8 @@ ApplicationWindow {
             "com.secuso.privacyFriendlyCodeScanner": "/icons/qr-scanner@4x.png",
             "com.twitter.android": "/icons/twitter@4x.png",
             "com.commerzbank.photoTAN": "/icons/photoTAN@4x.png",
-            "com.volla.messages": "/icons/volla-messages@4x.png"
+            "com.volla.messages": "/icons/volla-messages@4x.png",
+            "com.volla.hub": "/icons/volla-hub_156x156"
         }
         property var labelMap: {
             "com.simplemobiletools.filemanager.pro": qsTr("Files"),
@@ -379,8 +409,8 @@ ApplicationWindow {
             {"id" : actionType.ShowNotes, "name": qsTr("Show Notes"), "activated" : true},
             {"id" : actionType.ShowNews, "name": qsTr("Recent News"), "activated" : true},
             {"id" : actionType.ShowThreads, "name": qsTr("Recent Threads"), "activated" : true},
-            {"id" : actionType.ShowContacts, "name": qsTr("Recent People"), "activated" : true}]
-
+            {"id" : actionType.ShowContacts, "name": qsTr("Recent People"), "activated" : true},
+            {"id" : actionType.Redial, "name" : qsTr("Redial"), "activated" : true}]
         property var timeStamp: 0
         property var lastCheckOfThreads: 0
         property var lastCheckOfCalls: 0
@@ -405,6 +435,10 @@ ApplicationWindow {
 
         onBackgroundOpacityChanged: {
             updateGridView("backgroundOpacity", backgroundOpacity)
+        }
+
+        FontLoader {
+            id: regularFont
         }
 
         Item {
@@ -557,11 +591,11 @@ ApplicationWindow {
         }
 
         function switchTheme(theme, updateLockScreen) {
-            mainView.vollaTheme = theme
+            settings.theme = theme
             if (settings.sync) {
                 settings.sync()
             }
-            console.log("MainView | Swith theme to " + theme + ", " + settings.theme)
+            console.log("MainView | Switch theme to " + theme + ", " + settings.theme)
             switch (theme) {
             case mainView.theme.Dark:
                 Universal.theme = Universal.Dark
@@ -580,10 +614,10 @@ ApplicationWindow {
                 mainView.backgroundOpacity = 0.3
                 mainView.backgroundColor = "transparent"
                 mainView.fontColor = "white"
-            break
+                break
             case mainView.theme.LightTranslucent:
                 Universal.theme = Universal.Light
-                mainView.backgroundOpacity = 0.3
+                mainView.backgroundOpacity = 0.0
                 mainView.backgroundColor = "transparent"
                 mainView.fontColor = "black"
                 break
@@ -839,7 +873,10 @@ ApplicationWindow {
         function getActions() {
             var actions = shortcuts.read()
             console.log("MainView | Retrieved shortcuts: " + actions)
-            return actions.length > 0 ? JSON.parse(actions) : mainView.defaultActions
+            var actionArr = actions.length > 0 ? JSON.parse(actions) : mainView.defaultActions
+            var find = actionArr.find(a => a.id === actionType.Redial)
+            if (find === undefined) actionArr.push({"id" : actionType.Redial, "name" : qsTr("Redial"), "activated" : true})
+            return actionArr
         }
 
         function updateAction(actionId, isActive, sAction, newAction) {
@@ -861,8 +898,6 @@ ApplicationWindow {
                 case mainView.settingsAction.CREATE:
                     if (matched === false) {
                         actions.push(newAction)
-                        stored = shortcuts.write(JSON.stringify(actions))
-                        console.log("MainView | Did store Shortcut: " + stored)
                         showToast(qsTr("New shortcut") + ": " + newAction.name)
                     } else {
                         showToast(qsTr("You have alresdy added the shortcut"))
@@ -871,20 +906,20 @@ ApplicationWindow {
                 case mainView.settingsAction.UPDATE:
                     if (matched === true) {
                         actions[i] = action
-                        stored = shortcuts.write(JSON.stringify(actions))
-                        console.log("MainView | Did store shortcuts: " + stored)
+                    } else if (actionId === actionType.Redial) {
+                        actions.push({ "id": actionType.Redial, "name": qsTr("Redial"), "activated" : isActive })
                     }
                     break
                 case mainView.settingsAction.REMOVE:
                     if (matched === true) {
                         actions.splice(i, 1)
-                        stored = shortcuts.write(JSON.stringify(actions))
-                        console.log("MainView | Did store shortcuts: " + stored)
                     }
                     break
                 default:
                     break
             }
+            stored = shortcuts.write(JSON.stringify(actions))
+            console.log("MainView | Did store Shortcut: " + stored)
 
             springboard.children[0].item.updateShortcuts(actions)
             return stored
@@ -984,10 +1019,23 @@ ApplicationWindow {
             } else if (key === "useHapticMenus") {
                 settings.useHapticMenus = value
                 mainView.useVibration = value
+            } else if (key === "leftHandedMenu") {
+                settings.leftHandedMenu = value
+                console.log("MainView | Refreshing Springboard due to quick menu side switch")
+                springboardLoader.active = false
+                springboardLoader.active = true
+                if (mainView.isTablet) AN.SystemDispatcher.dispatch("volla.launcher.runningAppsAction", {})
+                springboard.children[0].item.updateShortcuts(getActions())
             } else if (key === "showAppsAtStartup") {
                 settings.showAppsAtStartup = value
             } else if (key === "activateSignal") {
                 settings.signalIsActivated = value
+            } else if (key === "customAccentColor") {
+                settings.customAccentColor = value
+                mainView.accentColor = value.length > 0 ? value : Universal.accent
+                mainView.accentTextColor = getContrastColor(mainView.accentColor)
+            } else if (key === "keepLockscreenWallpaper") {
+                settings.keepLockscreenWallpaper = value
             }
             if (settings.sync) {
                 settings.sync()
@@ -1132,7 +1180,7 @@ ApplicationWindow {
                         mainView.isLoadingContacts = true
                         mainView.updateSpinner(true)
                         AN.SystemDispatcher.dispatch("volla.launcher.contactAction", {})
-                    } else if (mainView.contacts.length === 0 && !mainView.isLoadingContacts) {
+                    } else if (mainView.contacts === undefined && !mainView.isLoadingContacts) {
                         mainView.timeStamp = new Date()
                         var contactsStr = contactsCache.readPrivate()
                         console.log("MainView | Did read contacts with length " + contactsStr.length)
@@ -1158,6 +1206,7 @@ ApplicationWindow {
                         console.log("MainView | Invalid RSS feed url")
                     }
                 } else if (type === "volla.launcher.uiModeResponse") {
+                    console.debug("MainView | volla.launcher.uiModeResponse")
                     mainView.switchTheme(message["uiMode"], false)
                 } else if (type === "volla.launcher.messageResponse") {
                     console.log("MainView | onDispatched: " + type)
@@ -1168,20 +1217,27 @@ ApplicationWindow {
                         mainView.showToast(qsTr(mainView.notifications[message["text"]]))
                     }
                 } else if (type === "volla.launcher.uiModeChanged") {
+                    console.debug("MainView | volla.launcher.uiModeChanged")
                     if (message["uiMode"] !== settings.theme) {
-                        settings.theme = message["uiMode"]
                         if (message["uiMode"] === mainView.theme.Light) {
-                            if(mainView.vollaTheme !== undefined && (mainView.vollaTheme === mainView.theme.LightTranslucent || mainView.vollaTheme === mainView.theme.DarkTranslucent)){
-                                mainView.switchTheme(mainView.theme.LightTranslucent, true)
-                            } else {
+                            if (settings.theme === mainView.theme.DarkTranslucent) {
+                                mainView.switchTheme(mainView.theme.LightTranslucent, false)
+                                settings.theme = mainView.theme.LightTranslucent
+                                settings.sync()
+                            } else if (settings.theme === mainView.theme.Dark) {
                                 mainView.switchTheme(mainView.theme.Light, true)
+                                settings.theme = mainView.theme.Light
+                                settings.sync()
                             }
-
                         } else if (message["uiMode"] === mainView.theme.Dark) {
-                            if(mainView.vollaTheme !== undefined && (mainView.vollaTheme == mainView.theme.LightTranslucent || mainView.vollaTheme == mainView.theme.DarkTranslucent)){
-                                mainView.switchTheme(mainView.theme.DarkTranslucent, true)
-                            } else {
+                            if (settings.theme === mainView.theme.LightTranslucent) {
+                                mainView.switchTheme(mainView.theme.DarkTranslucent, false)
+                                settings.theme = mainView.theme.DarkTranslucent
+                                settings.sync()
+                            } else if (settings.theme === mainView.theme.Light) {
                                 mainView.switchTheme(mainView.theme.Dark, true)
+                                settings.theme = mainView.theme.Dark
+                                settings.sync()
                             }
                         }
                     }
@@ -1196,6 +1252,26 @@ ApplicationWindow {
                         }
                         var object = component.createObject(mainView, properties)
                         object.open()
+                    }
+                } else if (type === "volla.launcher.fontResponse") {
+                    console.debug("MainView | System font: " + message["font"])
+
+                    if (message["font"] === "com.android.overlay.font.poppins") {
+                        //mainView.mainFontName = "Poppins"
+                        font.family = "Poppins"
+                    } else if (message["font"] === "com.android.overlay.font.roboto") {
+                        font.family = "Roboto"
+                    } else if (message["font"] === "com.volla.overlay.font.plex") {
+                        font.family = "IBM Plex Sans"
+                    } else if (message["font"] === "org.lineageos.overlay.font.rubik") {
+                        font.family = "Rubik"
+                    } else if (message["font"] === "org.lineageos.overlay.font.lato") {
+                        font.family = "Lato"
+                    } else if (message["font"] === "com.android.overlay.font.selawik") {
+                        font.family = "Selawik"
+                    } else {
+                        console.debug("Swipeview | Standard font")
+                        font.family = "Noto Sans"
                     }
                 }
             }
@@ -1217,10 +1293,9 @@ ApplicationWindow {
 
     Settings {
         id: settings
-        property string searchEngineName: ""
-        property string searchEngineUrl: ""
         property int theme: mainView.theme.Dark
         property int searchMode: mainView.searchMode.StartPage
+        property bool keepLockscreenWallpaper: false
         property bool fullscreen: false
         property bool firstStart: true
         property bool sttChecked: false
@@ -1228,8 +1303,10 @@ ApplicationWindow {
         property bool useColoredIcons: false
         property bool showAppsAtStartup: false
         property bool useHapticMenus: true
+        property bool leftHandedMenu: false
         property double blurEffect: 60.0
         property double lastContactsCheck: 0.0
+        property string customAccentColor: ""
 
         function checkCustomParameters() {
             var rawPresets = presets.readPresets()
@@ -1267,17 +1344,26 @@ ApplicationWindow {
                     console.debug("AppWindow | Set default theme to " + presetDict.theme)
                     settings.theme = presetDict.theme
                 }
-                if (presetDict.searchengine !== undefined && settings.firstStart) {
-                    console.debug("AppWindow | Set search engine to "+ presetDict.searchengine.name)
-                    settings.searchMode = mainView.searchMode.Custom
-                    settings.searchEngineName = presetDict.searchengine.name
-                    settings.searchEngineUrl = presetDict.searchengine.url
+                if (presetDict.searchengine !== undefined && presetDict.searchengine.url !== undefined && presetDict.searchengine.name !== undefined) {
+                    console.debug("AppWindow | Set additional search engine to "+ presetDict.searchengine.name)
+                    mainView.searchEngineName = presetDict.searchengine.name
+                    mainView.searchEngineUrl = presetDict.searchengine.url
+                    if (settings.firstStart) {
+                        console.debug("AppWindow | Set default search engine to "+ presetDict.searchengine.name)
+                        settings.searchMode = mainView.searchMode.Custom
+                    }
                 }
             }
         }
 
         Component.onCompleted: {
+            console.debug("MainView | Settings onCompleted")
             checkCustomParameters()
+            
+            if (settings.customAccentColor.length > 0) {
+                mainView.accentColor = settings.customAccentColor
+                mainView.accentTextColor = getContrastColor(mainView.accentColor)
+            }
 
             if (Universal.theme !== settings.theme) {
                 mainView.switchTheme(settings.theme, firstStart)
@@ -1305,10 +1391,6 @@ ApplicationWindow {
             }
             if (signalIsActivated) {
                 AN.SystemDispatcher.dispatch("volla.launcher.signalEnable", { "enableSignal": signalIsActivated})
-            }
-            if (searchMode === mainView.searchMode.Custom) {
-                mainView.searchEngineUrl = settings.searchEngineUrl
-                mainView.searchEngineName = settings.searchEngineName
             }
             mainView.useVibration = useHapticMenus
             mainView.useColoredIcons = useColoredIcons

@@ -5,11 +5,13 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.os.UserHandle;
 import android.util.Log;
 import android.content.pm.PackageManager;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.ResolveInfo;
 import android.content.pm.PackageInfo;
+import android.content.pm.LauncherApps;
 import android.content.Intent;
 import android.content.ComponentName;
 import android.provider.ContactsContract;
@@ -115,32 +117,60 @@ public class AppUtil {
                             }
                         } else if (type.equals(RUN_APP)) {
                             String packageName = (String) message.get("appId");
-                            try {
-                                Intent app = pm.getLaunchIntentForPackage(packageName);
-                                activity.startActivity(app);
-                            } catch (Exception e){
-                                PackageInfo pi;
-                                try {
-                                    pi = activity.getPackageManager().getPackageInfo(packageName, 0);
-                                    Intent resolveIntent = new Intent(Intent.ACTION_MAIN, null);
-                                    resolveIntent.setPackage(pi.packageName);
-                                    List<ResolveInfo> apps = pm.queryIntentActivities(resolveIntent, 0);
-                                    for (ResolveInfo app: apps){
-                                        Log.d(TAG,String.format("%s %s",app.activityInfo.packageName,app.activityInfo.name));
-                                        packageName = app.activityInfo.packageName;
-                                        String className = app.activityInfo.name;
-                                        Intent intent = new Intent(Intent.ACTION_MAIN);
-                                        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-                                        ComponentName cn = new ComponentName(packageName, className);
-                                        intent.setComponent(cn);
-                                        try {
-                                            activity.startActivity(intent);
-                                        } catch (SecurityException se){
-                                            Log.e(TAG, "Security exception: " + se.getMessage());
-                                        }
+                            String className = (String) message.get("class");
+                            boolean isCloned = false;
+                            if (message.get("isCloned") != null) {
+                                isCloned = (boolean) message.get("isCloned");
+                            }
+                            double userHandle = 0;
+                            if (message.get("userHandle") != null) {
+                                userHandle = (int) message.get("userHandle");
+                            }
+
+                            Log.d(TAG, packageName + ", " + className + ", " + String.valueOf((int)userHandle) + ", " + String.valueOf(isCloned));
+
+                            if (className != null && isCloned) {
+                                LauncherApps la = (LauncherApps)activity.getSystemService(Context.LAUNCHER_APPS_SERVICE);
+                                List<UserHandle> uhl = la.getProfiles();
+                                UserHandle appUh = null;
+                                for (UserHandle uh:uhl) {
+                                    if (uh.toString().endsWith(String.valueOf((int)userHandle) + "}")) {
+                                        appUh = uh;
+                                        break;
                                     }
-                                } catch (PackageManager.NameNotFoundException nnfe) {
-                                    Log.e(TAG, "Package Name not found: " + nnfe.getMessage() + ", App is not installed.");
+                                }
+                                ComponentName cn = new ComponentName(packageName, className);
+                                Log.d(TAG, "Will start cloned app" + appUh.toString());
+                                la.startMainActivity(cn, appUh, null, null);
+                            } else {
+                                Log.d(TAG, "Will start non cloned app");
+                                try {
+                                    Intent app = pm.getLaunchIntentForPackage(packageName);
+                                    activity.startActivity(app);
+                                } catch (Exception e) {
+                                    PackageInfo pi;
+                                    try {
+                                        pi = activity.getPackageManager().getPackageInfo(packageName, 0);
+                                        Intent resolveIntent = new Intent(Intent.ACTION_MAIN, null);
+                                        resolveIntent.setPackage(pi.packageName);
+                                        List<ResolveInfo> apps = pm.queryIntentActivities(resolveIntent, 0);
+                                        for (ResolveInfo app: apps) {
+                                            Log.d(TAG,String.format("%s %s",app.activityInfo.packageName,app.activityInfo.name));
+                                            packageName = app.activityInfo.packageName;
+                                            className = app.activityInfo.name;
+                                            Intent intent = new Intent(Intent.ACTION_MAIN);
+                                            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                                            ComponentName cn = new ComponentName(packageName, className);
+                                            intent.setComponent(cn);
+                                            try {
+                                                activity.startActivity(intent);
+                                            } catch (SecurityException se){
+                                                Log.e(TAG, "Security exception: " + se.getMessage());
+                                            }
+                                        }
+                                    } catch (PackageManager.NameNotFoundException nnfe) {
+                                        Log.e(TAG, "Package Name not found: " + nnfe.getMessage() + ", App is not installed.");
+                                    }
                                 }
                             }
                         } else if (type.equals(DELETE_APP)) {

@@ -24,7 +24,7 @@ Item {
     property double backgroundOpacity
     property double desaturation: 1.0
     property int groupIndex: 0
-    property int selectedGroupIndex: 1
+    property int selectedGroupIndex: 0
     property int columnCount: Screen.desktopAvailableWidth < 521 ? 4 : Screen.desktopAvailableWidth > 800 ? 8 : 5
 
     property bool unreadMessages: false
@@ -32,6 +32,7 @@ Item {
     property bool isHeaderVisible: groupIndex !== selectedGroupIndex
     property bool isHeader2Visible: groupIndex === selectedGroupIndex && groupIndex > 0 && groupLabel.toLowerCase()
     property bool isGridVisible: groupIndex === selectedGroupIndex
+    property bool showAppNames: true
 
     property var accentColor
     property var notificationData:""
@@ -81,7 +82,9 @@ Item {
 
     onSelectedGroupIndexChanged: {
         console.log("AppGroup " + groupIndex + " | Selected group changed to " + selectedGroupIndex)
-        groupColumn.topPadding = groupItem.groupIndex === 0 ? 0 : groupItem.groupIndex === 1 && groupItem.selectedGroupIndex === 0 ? groupItem.innerSpacing / 2 : groupItem.innerSpacing
+        groupColumn.topPadding = groupItem.groupIndex === 0 ?
+                    0 : groupItem.groupIndex === 1 && groupItem.selectedGroupIndex === 0 ?
+                        groupItem.innerSpacing / 2 : groupItem.innerSpacing
     }
 
     function showApps(appsShouldBeVisible) {
@@ -100,8 +103,10 @@ Item {
     Column {
         id: groupColumn
         width: parent.width
-        topPadding: groupItem.groupIndex === 0 ? 0 : groupItem.groupIndex === 1 && groupItem.selectedGroupIndex === 0 ?
-                                                     groupItem.componentSpacing / 2 : groupItem.componentSpacing
+        topPadding: groupItem.groupIndex === 0 ?
+                        0 : groupItem.groupIndex === 1 && groupItem.selectedGroupIndex === 0 ?
+                            groupItem.innerSpacing / 2 : groupItem.innerSpacing
+
         Button {
             id: groupHeader
             visible: groupItem.isHeaderVisible
@@ -109,7 +114,7 @@ Item {
             flat: true
             text: groupItem.groupLabel
             contentItem: Label {
-                text: groupHeader.text
+                text: groupHeader.text === "AAAA" ? qsTr("Favorits") : groupHeader.text
                 padding: groupItem.innerSpacing / 2
                 color: Universal.foreground
                 opacity: 0.5
@@ -124,6 +129,10 @@ Item {
 
             onClicked: {
                 groupItem.parent.showGroup(groupItem.groupIndex)
+            }
+
+            onPressAndHold: {
+                if (groupHeader.text !== "AAAA") groupItem.parent.openGroupContextMenu(groupHeader, groupGrid)
             }
         }
 
@@ -149,7 +158,7 @@ Item {
             id: groupGrid
             width: parent.width
             height: contentHeight
-            cellHeight: parent.width / groupItem.columnCount * 1.28
+            cellHeight: groupItem.showAppNames ? parent.width / groupItem.columnCount * 1.28 : parent.width / groupItem.columnCount
             cellWidth: parent.width / groupItem.columnCount
             visible: groupItem.isGridVisible
             interactive: false
@@ -186,12 +195,10 @@ Item {
                     width: parent.width
                     text: model.label
                     contentItem: Column {
-                        spacing: gridCell.width * 0.25
+                        spacing: groupItem.showAppNames ? gridCell.width * 0.25 : 0
                         Image {
                             id: buttonIcon
                             anchors.horizontalCenter: parent.horizontalCenter
-                            //anchors.left: parent.left
-                            //anchors.leftMargin: gridCell.width * 0.25
                             source: model.package in groupItem.iconMap && (model.shortcutId === undefined || model.shortcutId.length === 0) && desaturation === 1.0
                                     ? Qt.resolvedUrl(groupItem.iconMap[model.package]) : "data:image/png;base64," + model.icon
                             width: gridButton.width * 0.35
@@ -215,6 +222,7 @@ Item {
                             font.pointSize: groupItem.labelPointSize
                             clip: groupItem.backgroundOpacity === 1.0 ? true : false
                             elide: groupItem.backgroundOpacity === 1.0 ? Text.ElideNone :  Text.ElideRight
+                            visible: groupItem.showAppNames
                         }
                     }
                     flat:true
@@ -224,10 +232,10 @@ Item {
                     }
                     onClicked: {
                         if (groupGrid.currentIndex > -1) {
-                            groupItem.parent.closeContextMenu()
+                            groupItem.parent.closeAppContextMenu()
                             groupGrid.currentIndex = -1
                         } else if (model.package.length > 0) {
-                            console.log("App Group | App " + model.label + " selected")
+                            console.log("AppGroup | App " + model.label + " selected")
                             // As a workaround for a missing feature in the phone app
                             if (model.package === groupItem.phoneApp) {
                                 if (groupItem.newCalls) {
@@ -237,17 +245,23 @@ Item {
                                     AN.SystemDispatcher.dispatch("volla.launcher.dialerAction", {"app": groupItem.phoneApp})
                                 }
                             } else if (model.shortcutId !== undefined && model.shortcutId.length > 0) {
-                                AN.SystemDispatcher.dispatch("volla.launcher.launchShortcut",
-                                                             {"shortcutId": model.shortcutId, "package": model.package})
+                                AN.SystemDispatcher.dispatch("volla.launcher.launchShortcut", {"shortcutId": model.shortcutId, "package": model.package})
                             } else {
-                                AN.SystemDispatcher.dispatch("volla.launcher.runAppAction", {"appId": model.package})
+                                AN.SystemDispatcher.dispatch("volla.launcher.runAppAction",
+                                                             {"appId": model.package, "class": model.className,
+                                                              "userHandle": Math.floor(model.userHandle), "isCloned": model.isCloned})
                             }
-                             AN.SystemDispatcher.dispatch("volla.launcher.clearRedDot", {"package": model.package})
+                            AN.SystemDispatcher.dispatch("volla.launcher.clearRedDot", {"package": model.package})
                         }
                     }
                     onPressAndHold: {
                         groupGrid.currentIndex = index
-                        groupItem.parent.openContextMenu(model, gridCell, groupGrid)
+                        if (model.shortcutId !== undefined && model.shortcutId.length > 0) {
+                            var modelElem = groupModel.modelArr.filter(modelElem => modelElem.shortcutId === model.shortcutId)
+                        } else {
+                            modelElem = groupModel.modelArr.filter(modelElem => modelElem.package === model.package)
+                        }
+                        groupItem.parent.openAppContextMenu(modelElem[0], gridCell, groupGrid)
                     }
                 }
 
@@ -290,6 +304,23 @@ Item {
                     radius: height * 0.5
                     color:  accentColor
                 }
+
+                Rectangle {
+                    id: cloneBadge
+                    visible: model.isCloned > 0 && model.package in groupItem.iconMap
+                    anchors.bottom: gridCircle.bottom
+                    anchors.right: gridCircle.right
+                    width: parent.width * 0.15
+                    height: parent.width * 0.15
+                    radius: height * 0.5
+                    color:  accentColor
+
+                    Component.objectName: {
+                        color.r = 1 - color.r
+                        color.g = 1 - color.g
+                        color.b = 1 - color.b
+                    }
+                }
             }
 
             Behavior on contentHeight {
@@ -311,6 +342,7 @@ Item {
                 groupHeader.text = groupLabel.toLowerCase() === "apps"  ? "+" + groupModel.count + " " + groupLabel : groupLabel
                 groupItem.visible = groupModel.count > 0
             }
+
             Component.onCompleted: {
                 console.debug("AppGroup " + groupIndex + " | Workerscript established" );
                 isReady = true
@@ -327,9 +359,9 @@ Item {
             property var modelArr: new Array
             property var pendingMessage
 
-            onCountChanged: {
-                console.log("AppGroup " + groupIndex + " | Number of grid itens changed: " + count)
-            }
+//            onCountChanged: {
+//                console.log("AppGroup " + groupIndex + " | Number of grid itens changed: " + count)
+//            }
 
             // Call this method, if apps or shortcuts have been changed
             function prepareModel() {
@@ -343,7 +375,7 @@ Item {
                         "text" : groupItem.textInput
                     })
                 } else {
-                    console.debug("AppGroup " + groupIndex + " | Will define pending message for script status " + groupModelWorker.status)
+                    console.debug("AppGroup " + groupIndex + " | Will define pending message for script")
                     pendingMessage = {
                         "apps": groupItem.pinnedShortcuts.concat(groupItem.apps),
                         "labelMap" : groupItem.labelMap,

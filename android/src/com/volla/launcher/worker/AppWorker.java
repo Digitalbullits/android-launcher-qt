@@ -9,8 +9,12 @@ import android.app.usage.UsageStats;
 import android.app.AppOpsManager;
 import android.provider.Settings;
 import android.os.Bundle;
+import android.os.UserHandle;
 import android.content.pm.PackageManager;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.ActivityInfo;
+import android.content.pm.LauncherApps;
+import android.content.pm.LauncherActivityInfo;
 import android.content.pm.ResolveInfo;
 import android.content.Intent;
 import android.content.Context;
@@ -21,7 +25,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.BitmapDrawable;
-import android.util.Log;
 import android.util.Base64;
 import android.util.Log;
 import java.lang.reflect.Method;
@@ -101,47 +104,53 @@ public class AppWorker
                                 Log.d(TAG, "Usage stats entries: " + queryUsageStats.size());
                             }
 
-                            Intent i = new Intent(Intent.ACTION_MAIN, null);
-                            i.addCategory(Intent.CATEGORY_LAUNCHER);
-                            List<ResolveInfo> availableActivities = pm.queryIntentActivities(i, 0);
-                            appList.ensureCapacity(availableActivities.size());
+                            LauncherApps la = (LauncherApps)activity.getSystemService(Context.LAUNCHER_APPS_SERVICE);
+                            List<UserHandle> uhl = la.getProfiles();
 
-                            for (ResolveInfo ri:availableActivities) {
-                                Log.d(TAG, "Found package " + ri.activityInfo.packageName);
+                            boolean isMainUserHandle = true;
+                            for (UserHandle uh:uhl) {
+                                Log.d(TAG, "Apps for " + uh.toString());
+                                List<LauncherActivityInfo> lal = la.getActivityList(null, uh);
 
-                                if (!appsToHide.contains(ri.activityInfo.packageName)) {
-                                    Map appInfo = new HashMap();
-                                    appInfo.put("package", ri.activityInfo.packageName);
-                                    appInfo.put("label", String.valueOf(ri.loadLabel(pm)));
-                                    appInfo.put("icon", AppWorker.drawableToBase64(ri.loadIcon(pm)));
+                                for (LauncherActivityInfo lai:lal) {
+                                    if (!appsToHide.contains(lai.getComponentName().getPackageName())
+                                        && (isMainUserHandle || (lai.getApplicationInfo().flags & ApplicationInfo.FLAG_SYSTEM) == 0)) {
 
-                                    try {
-                                        ApplicationInfo applicationInfo = pm.getApplicationInfo(ri.activityInfo.packageName, 0);
-                                        int appCategory = applicationInfo.category;
+                                        Log.d(TAG, "Found package: " + lai.getComponentName() + ", " + lai.getLabel() + ", " + lai.getApplicationInfo());
+
+                                        Map appInfo = new HashMap();
+                                        appInfo.put("appId", lai.getComponentName().getPackageName() + "." + uh.toString());
+                                        appInfo.put("package", lai.getComponentName().getPackageName());
+                                        appInfo.put("className", lai.getComponentName().getClassName());
+                                        appInfo.put("userHandle", Integer.parseInt(uh.toString().substring(11, uh.toString().length() - 1)));
+                                        appInfo.put("isCloned", !isMainUserHandle);
+                                        appInfo.put("label", lai.getLabel());
+                                        appInfo.put("icon", AppWorker.drawableToBase64(lai.getBadgedIcon(0)));
+
+                                        int appCategory = lai.getApplicationInfo().category;
                                         if (appCategory > -1) {
-                                            appInfo.put("category", (String) ApplicationInfo.getCategoryTitle(activity, appCategory));
+                                            appInfo.put("category", (String) lai.getApplicationInfo().getCategoryTitle(activity, appCategory));
                                         } else {
                                             appInfo.put("category", "");
                                         }
-                                    } catch (Exception e) {
-                                        Log.w(TAG, "Unknown package name: " + e.toString());
-                                    }
 
-                                    long timeInForeground = 0;
+                                        long timeInForeground = 0;
 
-                                    for (UsageStats us : queryUsageStats) {
-                                        if (us.getPackageName().equalsIgnoreCase(ri.activityInfo.packageName)) {
-                                            timeInForeground = us.getTotalTimeInForeground();
-                                            break;
+                                        for (UsageStats us : queryUsageStats) {
+                                            if (us.getPackageName().equalsIgnoreCase(lai.getComponentName().getPackageName())) {
+                                                timeInForeground = us.getTotalTimeInForeground();
+                                                break;
+                                            }
                                         }
-                                    }
-                                    if (mostUsed.contains(ri.activityInfo.packageName)) {
-                                        timeInForeground = timeInForeground + 10; // fall back for missing stats
-                                    }
+                                        if (mostUsed.contains(lai.getComponentName().getPackageName())) {
+                                            timeInForeground = timeInForeground + 10; // fall back for missing stats
+                                        }
 
-                                    appInfo.put("statistic", (int)timeInForeground);
-                                    appList.add(appInfo);
+                                        appInfo.put("statistic", (int)timeInForeground);
+                                        appList.add(appInfo);
+                                    }
                                 }
+                                isMainUserHandle = false;
                             }
 
                             Map reply = new HashMap();

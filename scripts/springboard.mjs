@@ -49,7 +49,7 @@ WorkerScript.onMessage = function(message) {
     }
 
     function textInputCouldBeNewContact() {
-        return /([0-9a-zäüöA-Z-ÄÜÖß]+)(\s[0-9a-zäüöA-Z-ÄÜÖß]+)?\s(\+?[\d\s]+)/.test(textInput)
+        return /(^[0-9a-zäüöA-Z-ÄÜÖß]+)\s?([0-9a-zäüöA-Z-ÄÜÖß]+)?\s(\+?[\d\s]+)\s?([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63})?/.test(textInput)
     }
 
     var filteredSuggestionObj = new Array
@@ -89,6 +89,9 @@ WorkerScript.onMessage = function(message) {
         } else if (textInputCouldBeEvent()) {
             filteredSuggestionObj[0] = [actionName.CreateEvent, actionType.CreateEvent]
             filteredSuggestionObj[1] = [actionName.CreateNote, actionType.CreateNote]
+        } else if (textInputCouldBeNewContact()) {
+            filteredSuggestionObj[0] = [actionName.CreateContact, actionType.CreateContact]
+            filteredSuggestionObj[1] = [actionName.CreateNote, actionType.CreateNote]
         } else if (textInputHasMultiLines()) {
             filteredSuggestionObj[0] = [actionName.CreateNote, actionType.CreateNote]
         } else {
@@ -118,6 +121,9 @@ WorkerScript.onMessage = function(message) {
                 }
                 if (selectedObj["phone.signal"] !== undefined && selectedObj["phone.signal"].length > 0) {
                     filteredSuggestionObj.push([actionName.OpenSignalContact, actionType.OpenSignalContact])
+                }
+                if (phoneNumberCount > 0) {
+                    filteredSuggestionObj.push([actionName.CreateSpeedDial, actionType.CreateSpeedDial])
                 }
             } else {
                 console.log("SpringBoard | No contact selected")

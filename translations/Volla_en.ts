@@ -55,6 +55,64 @@
         <source>Remove App</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Add to new group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove from group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use custom groups</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit groupname</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter a group name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group name must have at least one character.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AppGridMenuItem</name>
+    <message>
+        <source>Add to </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Favorits</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AppGroup</name>
+    <message>
+        <source>Favorits</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Checkbox</name>
@@ -369,10 +427,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Show grouped apps</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Use app categories</source>
         <translation type="unfinished"></translation>
     </message>
@@ -430,6 +484,46 @@
     </message>
     <message>
         <source>Light Translucent Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show frequently used apps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Left-handed quick menu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Accent Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose Accent Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset to Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show app names</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keep the wallpaper unchanged</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dialer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restart app</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -525,6 +619,18 @@
     </message>
     <message>
         <source>x</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New contact saved</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There was no outgoing call in the last days.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Speed dial</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -823,6 +929,18 @@
     </message>
     <message>
         <source>Weather</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Redial</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create new contact</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create speed dial</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

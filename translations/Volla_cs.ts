@@ -13,7 +13,7 @@
     </message>
     <message>
         <source>apps</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">aplikace</translation>
     </message>
     <message>
         <source>Apps</source>
@@ -61,7 +61,65 @@
     </message>
     <message>
         <source>Remove App</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Odebrat aplikaci</translation>
+    </message>
+    <message>
+        <source>Add to new group</source>
+        <translation type="unfinished">Přidat do nové skupiny</translation>
+    </message>
+    <message>
+        <source>Remove from group</source>
+        <translation type="unfinished">Odebrat ze skupiny</translation>
+    </message>
+    <message>
+        <source>Use custom groups</source>
+        <translation type="unfinished">Použít vlastní skupiny</translation>
+    </message>
+    <message>
+        <source>Remove group</source>
+        <translation type="unfinished">Odebrat skupinu</translation>
+    </message>
+    <message>
+        <source>Edit groupname</source>
+        <translation type="unfinished">Upravit název skupiny</translation>
+    </message>
+    <message>
+        <source>Group name</source>
+        <translation type="unfinished">Název skupiny</translation>
+    </message>
+    <message>
+        <source>Enter a group name</source>
+        <translation type="unfinished">dejte název skupiny</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Zrušit</translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation type="unfinished">Ok</translation>
+    </message>
+    <message>
+        <source>Group name must have at least one character.</source>
+        <translation type="unfinished">Název skupiny musí obsahovat alespoň jeden znak.</translation>
+    </message>
+</context>
+<context>
+    <name>AppGridMenuItem</name>
+    <message>
+        <source>Add to </source>
+        <translation type="unfinished">Přidat do </translation>
+    </message>
+    <message>
+        <source>Favorits</source>
+        <translation type="unfinished">Oblíbené</translation>
+    </message>
+</context>
+<context>
+    <name>AppGroup</name>
+    <message>
+        <source>Favorits</source>
+        <translation type="unfinished">Oblíbené</translation>
     </message>
 </context>
 <context>
@@ -374,7 +432,7 @@
     </message>
     <message>
         <source>Show grouped apps</source>
-        <translation type="unfinished">Zobrazit seskupené aplikace</translation>
+        <translation type="obsolete">Zobrazit seskupené aplikace</translation>
     </message>
     <message>
         <source>Use app categories</source>
@@ -414,23 +472,23 @@
     </message>
     <message>
         <source>Couldn&apos;t load available plugins</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nelze načíst dostupné pluginy</translation>
     </message>
     <message>
         <source>Password needs at least four characters or numbers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Heslo musí obsahovat alespoň čtyři znaky nebo číslice.</translation>
     </message>
     <message>
         <source>Weather</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Počasí</translation>
     </message>
     <message>
         <source>Clock</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Hodiny</translation>
     </message>
     <message>
         <source>Note</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Poznámka</translation>
     </message>
     <message>
         <source>Widgets</source>
@@ -443,6 +501,46 @@
     <message>
         <source>Light Translucent Mode</source>
         <translation type="unfinished">Světlý průsvitný režim</translation>
+    </message>
+    <message>
+        <source>Show frequently used apps</source>
+        <translation type="unfinished">Zobrazit často používané aplikace</translation>
+    </message>
+    <message>
+        <source>Left-handed quick menu</source>
+        <translation type="unfinished">Rychlé menu pro leváky</translation>
+    </message>
+    <message>
+        <source>Accent Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose Accent Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset to Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show app names</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keep the wallpaper unchanged</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dialer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restart app</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -525,19 +623,35 @@
     </message>
     <message>
         <source>weather</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Počasí</translation>
     </message>
     <message>
         <source>Set location</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nastavit polohu</translation>
     </message>
     <message>
         <source>Enter any location</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zadejte místo</translation>
     </message>
     <message>
         <source>x</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There is no outgoing call in the last days.</source>
+        <translation type="obsolete">V posledních dnech nebyl uskutečněn žádný odchozí hovor.</translation>
+    </message>
+    <message>
+        <source>New contact saved</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There was no outgoing call in the last days.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Speed dial</source>
+        <translation type="unfinished">Rychlá volba</translation>
     </message>
 </context>
 <context>
@@ -759,19 +873,19 @@
     </message>
     <message>
         <source>Couldn&apos;t load plugin</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nelze načíst plugin</translation>
     </message>
     <message>
         <source>Files</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Soubory</translation>
     </message>
     <message>
         <source>Messages</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zprávy</translation>
     </message>
     <message>
         <source>Music</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Hudba</translation>
     </message>
     <message>
         <source>Bancontact</source>
@@ -823,7 +937,7 @@
     </message>
     <message>
         <source>Maps</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mapy</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -835,7 +949,19 @@
     </message>
     <message>
         <source>Weather</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Počasí</translation>
+    </message>
+    <message>
+        <source>Redial</source>
+        <translation type="unfinished">Opakované volání</translation>
+    </message>
+    <message>
+        <source>Create new contact</source>
+        <translation type="unfinished">Vytvořit nový kontakt</translation>
+    </message>
+    <message>
+        <source>Create speed dial</source>
+        <translation type="unfinished">Vytvořit rychlou volbu</translation>
     </message>
 </context>
 </TS>

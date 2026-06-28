@@ -111,6 +111,64 @@
         <source>Remove App</source>
         <translation>卸载应用</translation>
     </message>
+    <message>
+        <source>Add to new group</source>
+        <translation type="unfinished">添加到新组</translation>
+    </message>
+    <message>
+        <source>Remove from group</source>
+        <translation type="unfinished">从组中移除</translation>
+    </message>
+    <message>
+        <source>Use custom groups</source>
+        <translation type="unfinished">从组中移除</translation>
+    </message>
+    <message>
+        <source>Remove group</source>
+        <translation type="unfinished">删除组</translation>
+    </message>
+    <message>
+        <source>Edit groupname</source>
+        <translation type="unfinished">编辑组名称</translation>
+    </message>
+    <message>
+        <source>Group name</source>
+        <translation type="unfinished">组名称</translation>
+    </message>
+    <message>
+        <source>Enter a group name</source>
+        <translation type="unfinished">输入组名称</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">取消</translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation type="unfinished">确认</translation>
+    </message>
+    <message>
+        <source>Group name must have at least one character.</source>
+        <translation type="unfinished">组名必须至少包含一个字符。</translation>
+    </message>
+</context>
+<context>
+    <name>AppGridMenuItem</name>
+    <message>
+        <source>Add to </source>
+        <translation type="unfinished">添加到</translation>
+    </message>
+    <message>
+        <source>Favorits</source>
+        <translation type="unfinished">夹</translation>
+    </message>
+</context>
+<context>
+    <name>AppGroup</name>
+    <message>
+        <source>Favorits</source>
+        <translation type="unfinished">夹</translation>
+    </message>
 </context>
 <context>
     <name>Checkbox</name>
@@ -430,7 +488,7 @@
     </message>
     <message>
         <source>Show grouped apps</source>
-        <translation>展示分组应用</translation>
+        <translation type="vanished">展示分组应用</translation>
     </message>
     <message>
         <source>Use app categories</source>
@@ -474,11 +532,11 @@
     </message>
     <message>
         <source>Clock</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">时钟</translation>
     </message>
     <message>
         <source>Note</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">注意</translation>
     </message>
     <message>
         <source>Widgets</source>
@@ -491,6 +549,46 @@
     <message>
         <source>Light Translucent Mode</source>
         <translation type="unfinished">半透明模式</translation>
+    </message>
+    <message>
+        <source>Show frequently used apps</source>
+        <translation type="unfinished">显示常用应用程序</translation>
+    </message>
+    <message>
+        <source>Left-handed quick menu</source>
+        <translation type="unfinished">左撇子快速菜单</translation>
+    </message>
+    <message>
+        <source>Accent Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose Accent Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset to Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show app names</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keep the wallpaper unchanged</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dialer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restart app</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -573,19 +671,31 @@
     </message>
     <message>
         <source>weather</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">天气</translation>
     </message>
     <message>
         <source>Set location</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">设置位置</translation>
     </message>
     <message>
         <source>Enter any location</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">输入位置</translation>
     </message>
     <message>
         <source>x</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There was no outgoing call in the last days.</source>
+        <translation type="unfinished">最近几天没有拨出电话。</translation>
+    </message>
+    <message>
+        <source>New contact saved</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Speed dial</source>
+        <translation type="unfinished">快速拨号</translation>
     </message>
 </context>
 <context>
@@ -819,7 +929,7 @@
     </message>
     <message>
         <source>Music</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">音乐</translation>
     </message>
     <message>
         <source>Bancontact</source>
@@ -884,6 +994,18 @@
     <message>
         <source>Weather</source>
         <translation type="unfinished">天气</translation>
+    </message>
+    <message>
+        <source>Redial</source>
+        <translation type="unfinished">拨</translation>
+    </message>
+    <message>
+        <source>Create new contact</source>
+        <translation type="unfinished">创建新联系人</translation>
+    </message>
+    <message>
+        <source>Create speed dial</source>
+        <translation type="unfinished">创建快速拨号</translation>
     </message>
 </context>
 </TS>

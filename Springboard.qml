@@ -91,14 +91,16 @@ LauncherPage {
 
         switch (widgetId) {
             case 0:
-                widgetsSettings.weatherWidgetIsVisible = isVisible
+                widgetsSettings.weatherWgtIsVisible = isVisible
                 break
             case 1:
-                widgetsSettings.clockWidgetIsVisible = isVisible
+                widgetsSettings.clockWgtIsVisible = isVisible
                 break
             case 2:
-                widgetsSettings.noteWidgetIsVisible = isVisible
+                widgetsSettings.noteWgtIsVisible = isVisible
                 break
+            case 3:
+                widgetsSettings.dialerWgtIsVisible = isVisible
             default:
                 break
         }
@@ -372,7 +374,7 @@ LauncherPage {
                     year = matches[3] === undefined ? d.getFullYear() : parseInt(matches[3])
                     if (year < 100) year = 2000 + year
                     beginhour = matches[4] !== undefined ? parseInt(matches[4].split(":")[0]) : -1
-                    beginMinute = beginhour > - 1 && matches[4].split(":")[1] !== undefined ? parseInt(matches[4].split(":")[1]).split(":")[1] : 0
+                    beginMinute = beginhour > - 1 && matches[4].split(":")[1] !== undefined ? parseInt(matches[4].split(":")[1]) : 0
                     if (matches[5] !== undefined && matches[5].toLowerCase() === "pm") beginhour = beginhour + 12
                     endHour = matches[7]  !== undefined ? parseInt(matches[7].split(":")[0]) : -1
                     endMinute = endHour > - 1 && matches[6].split(":")[1] !== undefined ? parseInt(matches[6].split(":")[1]) : 0
@@ -401,6 +403,21 @@ LauncherPage {
                     AN.SystemDispatcher.dispatch("volla.launcher.createEventAction", {
                           "allDay": allDay, "title": title, "description": description})
                 }
+            }
+
+            function parseAndSaveContact() {
+                var matches = /([0-9a-zäüöA-Z-ÄÜÖß]+)\s?([0-9a-zäüöA-Z-ÄÜÖß]+)?\s(\+?[\d\s]+)\s?([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63})?/.exec(textInput.trim())
+                for (var i = 0; i < matches.length; i++) {
+                    console.debug("Springboard | " + i + " group of contact: " + matches[i])
+                }
+                var firstName = matches[1]
+                var lastName = matches[2] !== undefined ? matches[1] : ""
+                var phoneNumber = matches[3]
+                var email = matches[4] !== undefined ? matches[4] : ""
+                var contact = { "name": firstName + " " + lastName, "phoneNumber" : phoneNumber }
+                if (email.length > 0) contact.email = email
+                if (/(^\+49)|(^01[5-7][1-9])/.test(phoneNumber)) contact.isMobile = true
+                AN.SystemDispatcher.dispatch("volla.launcher.createContactAction", contact)
             }
 
             function textInputStartsWithPhoneNumber() {
@@ -571,6 +588,11 @@ LauncherPage {
                         textInputArea.text = ""
                         mainView.showToast("Event added to calendar")
                         break
+                    case mainView.actionType.CreateContact:
+                        parseAndSaveContact()
+                        textInputArea.text = ""
+                        mainView.showToast(qsTr("New contact saved"))
+                        break
                     case mainView.actionType.SendSignal:
                         idx = textInput.search(/\s/)
                         message = textInput.substring(idx+1, textInput.length)
@@ -609,13 +631,13 @@ LauncherPage {
                             textInputArea.text = ""
                             textInputArea.forceActiveFocus()
                         }
-                        break;
+                        break
                     case mainView.actionType.LiveContentPlugin:
                         if (actionObj.link !== undefined && actionObj.link.length > 0) {
                             console.debug("Springboard | Will open link '" + actionObj.link + "' of plugin " + actionObj.pluginId)
                             Qt.openUrlExternally(actionObj.link)
                         }
-                        break;
+                        break
                     case mainView.actionType.SuggestContact:
                         console.log("Springboard | Will complete " + textInput.substring(0, textInput.lastIndexOf(" ")) + actionValue)
                         if (actionObj !== undefined && actionValue !== undefined) {
@@ -631,7 +653,23 @@ LauncherPage {
                             textInputArea.text = ""
                             textInputArea.forceActiveFocus()
                         }
-                        break;
+                        break
+                    case mainView.actionType.CreateSpeedDial:
+                        console.log("Springboard | Will create speed dial")
+                        if (selectedObj !== undefined) {
+                            if (selectedObj["phone.mobile"] !== undefined) phoneNumber = selectedObj["phone.mobile"]
+                            else if (selectedObj["phone.work"] !== undefined) phoneNumber = selectedObj["phone.work"]
+                            else if (selectedObj["phone.home"] !== undefined) phoneNumber = selectedObj["phone.home"]
+                            else if (selectedObj["phone.other"] !== undefined) phoneNumber = selectedObj["phone.other"]
+                            if (phoneNumber !== undefined && phoneNumber.length > 0) {
+                                var shortcut = {"id": "tel:" + phoneNumber, "name": qsTr("Speed dial") + " " + selectedObj.name,  "activated": true}
+                                mainView.updateAction(shortcut["id"], true, mainView.settingsAction.CREATE, shortcut )
+                            }
+                            textInputArea.text = ""
+                        } else {
+                            mainView.showToast(qsTr("Sorry, no contact was selected"))
+                        }
+                        break
                 }
             }
 
@@ -734,8 +772,7 @@ LauncherPage {
             height: button.height
             width: parent.width
             color: model.action < 20000 ? "transparent" :
-                                          model.action < 20029 ? mainView.accentColor
-                                                               : "slategrey"
+                                          model.action < 20029 || model.action > 20030 ? mainView.accentColor : "slategrey"
 
             Button {
                 id: button
@@ -751,7 +788,7 @@ LauncherPage {
                     text: button.text
                     elide: Text.ElideRight
                     font.pointSize: mainView.largeFontSize
-                    color: model.action < 20000 ? Universal.foreground : "white"
+                    color: model.action < 20000 ? Universal.foreground : mainView.accentTextColor
                     wrapMode: Text.WordWrap
                 }
                 background: Rectangle {
@@ -799,7 +836,7 @@ LauncherPage {
                         textInputArea.text = ""
                     }
                 } else if (type === "volla.launcher.runningAppsResponse") {
-                    console.log("Springboard | " + message["apps"].length + " running apps received")
+                    console.log("Springboard | onDispatched: " + message["apps"].length + " running apps received")
                     for (var i = 0; i < springBoard.appButtons.length; i++) {
                         var appButton = springBoard.appButtons[i]
                         appButton.destroy()
@@ -825,6 +862,13 @@ LauncherPage {
                         appButtons.push(object)
                         closeAppsButton.visible = true
                     }
+                } else if (type === "volla.launcher.recentCallResponse") {
+                    if (message.calls.length > 0) {
+                        console.log("Springboard | onDispatched: " + message.calls.length + " recent call(s)")
+                        util.makeCall({"number": message.calls[0].number, "intent": "call"})
+                    } else {
+                        mainView.showToast(qsTr("There was no outgoing call in the last days."))
+                    }
                 }
             }
         }
@@ -847,13 +891,13 @@ LauncherPage {
 
     Flow {
         id: widgetsFlow
-        visible: mainView.isTablet && listModel.count === 0
+        visible: !textInputArea.activeFocus
         width: parent.width - mainView.innerSpacing
         layoutDirection: Qt.RightToLeft
         spacing: mainView.innerSpacing
         anchors.bottom: parent.bottom
         anchors.right: parent.right
-        anchors.rightMargin: mainView.innerSpacing
+        anchors.rightMargin: mainView.isTablet ? mainView.innerSpacing : 3 * mainView.innerSpacing + rootMenuButton.width
         anchors.bottomMargin: dotShortcut ? mainView.innerSpacing * 2 : 0
 
         property double sideLength: 180
@@ -864,7 +908,7 @@ LauncherPage {
             border.color: "grey"
             width: widgetsFlow.sideLength
             height: widgetsFlow.sideLength
-            visible: widgetsSettings.weatherWidgetIsVisible
+            visible: widgetsSettings.weatherWgtIsVisible
 
             property string apiKey: "488297aabb1676640ac7fc10a6c5a2d1"
             property string city: weatherSettings.city
@@ -1084,7 +1128,7 @@ LauncherPage {
 
                  function getGeoCodes(city) {
                      console.debug("Widget | Will request cities: " + city)
-                     var geoUrl = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=20&appid=" + weatherWidget.apiKey
+                     var geoUrl = "https://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=20&appid=" + weatherWidget.apiKey
                      geoRequest.onreadystatechange = function() {
                          if (geoRequest.readyState === XMLHttpRequest.DONE) {
                              console.debug("Widget | Geo location response: " + geoRequest.status)
@@ -1114,7 +1158,7 @@ LauncherPage {
 
             function getLocation() {
                 console.debug("Widget | Will request city name for " + weatherWidget.latitude, weatherWidget.longitude)
-                var cityUrl = "http://api.openweathermap.org/geo/1.0/reverse?lat="
+                var cityUrl = "https://api.openweathermap.org/geo/1.0/reverse?lat="
                         + weatherWidget.latitude + "&lon=" + weatherWidget.longitude + "&appid=" + apiKey
                 var cityRequest = new XMLHttpRequest()
                 cityRequest.onreadystatechange = function() {
@@ -1150,8 +1194,8 @@ LauncherPage {
                         if (weatherRequest.status === 200) {
                             var weather = JSON.parse(weatherRequest.responseText)
                             weatherImage.source = "https://openweathermap.org/img/wn/" + weather.weather[0].icon + "@2x.png"
-                            recentTemperature.text = weather.main.temp + "°C"
-                            dayTemperatures.text = weather.main.temp_min + "°C - " + weather.main.temp_max + "°C"
+                            recentTemperature.text = truncateToOneDecimal(weather.main.temp) + "°C"
+                            dayTemperatures.text = truncateToOneDecimal(weather.main.temp_min) + "°C - " + truncateToOneDecimal(weather.main.temp_max) + "°C"
                         } else {
                             console.error("Widget | Error retrieving weather: ", weatherRequest.status, weatherRequest.statusText)
                         }
@@ -1159,6 +1203,10 @@ LauncherPage {
                 }
                 weatherRequest.open("GET", weatherUrl)
                 weatherRequest.send()
+            }
+
+            function truncateToOneDecimal(val) {
+                return val.toString().split(".")[0] + "." + val.toString().split(".")[1][0];
             }
 
             Timer {
@@ -1199,7 +1247,7 @@ LauncherPage {
             border.color: "grey"
             width: widgetsFlow.sideLength
             height: widgetsFlow.sideLength
-            visible: widgetsSettings.clockWidgetIsVisible
+            visible: widgetsSettings.clockWgtIsVisible
 
             // todo
             Clock {
@@ -1215,7 +1263,7 @@ LauncherPage {
             border.color: "grey"
             width: widgetsFlow.sideLength
             height: widgetsFlow.sideLength
-            visible: widgetsSettings.noteWidgetIsVisible
+            visible: widgetsSettings.noteWgtIsVisible
 
             property var note
 
@@ -1279,41 +1327,140 @@ LauncherPage {
             }
         }
 
+        Rectangle {
+            id: dialWidget
+            color: mainView.backgroundOpacity === 1.0 ? Universal.background : "transparent"
+            border.color: "grey"
+            width: widgetsFlow.sideLength
+            height: widgetsFlow.sideLength
+            visible: widgetsSettings.dialerWgtIsVisible
+
+            GridView {
+                id: dialerGrid
+
+                width: dialWidget.width
+                height: dialWidget.height
+                cellWidth: dialWidget.width / 3
+                cellHeight: dialWidget.height / 4
+
+                model: ListModel {
+                    id: dialerModel
+
+                    function update() {
+                        if (count === 0) {
+                            var labels = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "*", "0", "#"]
+                            for (var i = 0; i < labels.length; i++) {
+                                append({"label": labels[i]})
+                            }
+                        }
+
+                        console.debug("Springboard | Number of contacts: " + mainView.getContacts().length)
+                        var favorits = mainView.getContacts().filter(function(contact) {
+                            return (contact["starred"])
+                        })
+
+                        for (var i = 0; i < count; i++) {
+                            var j = parseInt(get(i).label)
+                            if (j !== NaN && favorits[j] !== undefined) {
+                                console.debug("Springboard | Favorite: " + favorits[j].name)
+                                var contact = favorits[j]
+                                var phoneNumber = contact["phone.mobile"] !== undefined ? contact["phone.mobile"] :
+                                                  contact["phone.home"] !== undefined ? contact["phone.home"] :
+                                                  contact["phone.work"] !== undefined ? contact["phone.work"] :
+                                                  contact["phone.other"] !== undefined ? contact["phone.other"] : undefined
+                                if (phoneNumber !== undefined) {
+                                    console.debug("Springboard | Favorite: phone number: " + phoneNumber)
+                                    setProperty(i, "phone", phoneNumber)
+                                } else {
+                                    setProperty(i, "phone", undefined)
+                                }
+                            } else {
+                                setProperty(i, "phone", undefined)
+                            }
+                        }
+                    }
+                }
+
+                currentIndex: -1
+
+                delegate: Button {
+                    width: dialWidget.width / 3
+                    height: dialWidget.height / 4
+                    flat: true
+                    text: model.label
+                    background: Rectangle {
+                        visible: model.phone !== undefined
+                        anchors.fill: parent
+                        color: Universal.foreground
+                        opacity: 0.2
+                    }
+                    onClicked: {
+                        textInputArea.text = textInput.concat(model.label)
+                    }
+                    onPressAndHold: {
+                        console.debug("Springboard | Will call " + model.phone)
+                        if (model.phone !== undefined) {
+                            util.makeCall({"number": model.phone, "intent": "call"})
+                        }
+                    }
+                }
+
+                Connections {
+                   target: Qt.application
+                   onStateChanged: {
+                      if (Qt.application.state === Qt.ApplicationActive) {
+                          dialerModel.update()
+                      }
+                   }
+                }
+
+                Component.onCompleted: {
+                    var labels = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "*", "0", "#"]
+                    for (var i = 0; i < labels.length; i++) {
+                        dialerModel.append({"label": labels[i]})
+                    }
+                    dialerModel.update()
+                }
+            }
+        }
+
         Settings {
             id: widgetsSettings
-            property bool clockWidgetIsVisible: true
-            property bool weatherWidgetIsVisible: true
-            property bool noteWidgetIsVisible: true
+            property bool clockWgtIsVisible: mainView.isTablet ? true : false
+            property bool weatherWgtIsVisible: mainView.isTablet ? true : false
+            property bool noteWgtIsVisible: mainView.isTablet ? true : false
+            property bool dialerWgtIsVisible: false
 
-            onClockWidgetIsVisibleChanged: {
+            onClockWgtIsVisibleChanged: {
                 console.debug("Springborad | Clock widget visibility changed to " + clockWidgetIsVisible)
             }
 
-            onWeatherWidgetIsVisibleChanged: {
-                console.debug("Springborad | Weather widget visibility changed to " + weatherWidgetIsVisible)
+            onWeatherWgtIsVisibleChanged: {
+                console.debug("Springborad | Weather widget visibility changed to " + weatherWgtIsVisible)
             }
 
-            onNoteWidgetIsVisibleChanged: {
-                console.debug("Springborad | Note widget visibility changed to " + noteWidgetIsVisible)
+            onNoteWgtIsVisibleChanged: {
+                console.debug("Springborad | Note widget visibility changed to " + noteWgtIsVisible)
             }
 
-//            Component.onCompleted: {
-//                weatherWidget.visible = weatherWidgetIsVisible
-//                clockWidget.visible = clockWidgetIsVisible
-//                noteWidget.visible = noteWidgetIsVisible
-//            }
+            onDialerWgtIsVisibleChanged: {
+                console.debug("Springborad | Dialer widget visibility changed to " + dialerWgtIsVisible)
+            }
         }
     }
 
     MouseArea {
         id: shortcutMenu
-        width: Screen.desktopAvailableWidth > 445 ? springBoard.menuWidth : springBoard.width
-        height: dotShortcut ? mainView.innerSpacing * 4 : mainView.innerSpacing * 3
+        width: dotShortcut ? mainView.innerSpacing * 4 : mainView.innerSpacing * 3 // Screen.desktopAvailableWidth > 445 ? springBoard.menuWidth : springBoard.width
+        height: dotShortcut ? mainView.innerSpacing * 4 : mainView.innerSpacing * 3 // shortcutColumn.height + dotShortcut ? mainView.innerSpacing * 4 : mainView.innerSpacing * 3
         anchors.bottom: parent.bottom
-        anchors.right: parent.right
-        anchors.rightMargin: 0 - mainView.outerSpacing
+        anchors.right: mainView.useLeftHandedMenu ? undefined : parent.right
+        anchors.left: mainView.useLeftHandedMenu ? parent.left : undefined
+        anchors.rightMargin: mainView.useLeftHandedMenu ? undefined : (0 - mainView.outerSpacing)
+        anchors.leftMargin: mainView.useLeftHandedMenu ? (0 - mainView.outerSpacing) : undefined
 
         preventStealing: true
+        propagateComposedEvents: true
         enabled: !textInputArea.activeFocus && !defaultSuggestions
 
         property var selectedMenuItem: rootMenuButton
@@ -1332,72 +1479,81 @@ LauncherPage {
 
         onEntered: {
             console.log("Springboard | entered")
+
+            width = Screen.desktopAvailableWidth > 445 ? springBoard.menuWidth : springBoard.width
+            height = shortcutColumn.topPadding * 2 + shortcutColumn.bottomPadding
+                    + shortcutColumn.shortcutLabels.length * (mainView.largeFontSize + mainView.innerSpacing + 2)
+
             var rbPoint = mapFromItem(rootMenuButton, 0, 0)
             var touchY = dotShortcut ? rbPoint.y : rbPoint.y - rootMenuButton.height
             var touchHeight = dotShortcut ? rootMenuButton.height : rootMenuButton.height * 2
             if (mouseX > rbPoint.x && mouseX < rbPoint.x + rootMenuButton.width
                     && mouseY > touchY && mouseY < touchY + touchHeight) {
                 console.log("Springboard | enable menu")
-                console.log("Springboard | width " + parent.width, shortcutMenu.width, shortcutColumn.width)
-                //shortcutBackground.visible = true
-                shortcutMenu.height = shortcutColumn.height + mainView.innerSpacing * 1.5
+                var shortcutBackgroundHeight = shortcutColumn.topPadding * 2 + shortcutColumn.bottomPadding
+                        + shortcutColumn.shortcutLabels.length * (mainView.largeFontSize + mainView.innerSpacing + 2)
                 shortcutBackground.width = roundedShortcutMenu ? shortcutMenu.width - mainView.innerSpacing * 4 : shortcutMenu.width
-                shortcutBackground.height = shortcutColumn.height
+                shortcutBackground.height = shortcutBackgroundHeight
                 shortcutColumn.opacity = 1
             }
         }
 
         onExited: {
             console.log("Springboard | exited")
-            //shortcutBackground.visible = false
-            shortcutBackground.width = dotShortcut ? mainView.innerSpacing * 2 : parent.width
-            shortcutBackground.height = dotShortcut ? mainView.innerSpacing * 2 : mainView.innerSpacing
-            shortcutColumn.opacity = 0
-            shortcutMenu.executeSelection()
-            selectedMenuItem = rootMenuButton
-            shortcutMenu.height = dotShortcut ? mainView.innerSpacing * 4 : mainView.innerSpacing * 3
+            if (shortcutColumn.opacity > 0) {
+                shortcutBackground.width = dotShortcut ? mainView.innerSpacing * 2 : parent.width
+                shortcutBackground.height = dotShortcut ? mainView.innerSpacing * 2 : mainView.innerSpacing
+                shortcutColumn.opacity = 0
+                shortcutMenu.executeSelection()
+                selectedMenuItem = rootMenuButton
+                shortcutMenu.width = dotShortcut ? mainView.innerSpacing * 4 : mainView.innerSpacing * 3
+                shortcutMenu.height = dotShortcut ? mainView.innerSpacing * 4 : mainView.innerSpacing * 3
+            }
         }
 
         onCanceled: {
             console.log("Springboard | cancelled")
-            //shortcutBackground.visible = false
-            shortcutBackground.width = dotShortcut ? mainView.innerSpacing * 2 : parent.width
-            shortcutBackground.height = dotShortcut ? mainView.innerSpacing * 2 : mainView.innerSpacing
-            shortcutColumn.opacity = 0
-            //shortcutMenu.executeSelection()
-            selectedMenuItem = rootMenuButton
-            shortcutMenu.height = dotShortcut ? mainView.innerSpacing * 4 : mainView.innerSpacing * 3
+            if (shortcutColumn.opacity > 0) {
+                shortcutBackground.width = dotShortcut ? mainView.innerSpacing * 2 : parent.width
+                shortcutBackground.height = dotShortcut ? mainView.innerSpacing * 2 : mainView.innerSpacing
+                shortcutColumn.opacity = 0
+                selectedMenuItem = rootMenuButton
+                shortcutMenu.width = dotShortcut ? mainView.innerSpacing * 4 : mainView.innerSpacing * 3
+                shortcutMenu.height = dotShortcut ? mainView.innerSpacing * 4 : mainView.innerSpacing * 3
+            }
         }
 
         onPositionChanged: {
-            var selectedItem = rootMenuButton
+            if (shortcutColumn.opacity > 0) {
+                var selectedItem = rootMenuButton
 
-            for (var i = 0; i < shortcutColumn.shortcutLabels.length; i++) {
-                var shortcutLabel = shortcutColumn.shortcutLabels[i]
-                var lPoint = mapFromItem(shortcutLabel, 0, 0)
-                if (lPoint.y && mouseY < lPoint.y + shortcutLabel.height) {
-                    selectedItem = shortcutLabel
-                    break
+                for (var i = 0; i < shortcutColumn.shortcutLabels.length; i++) {
+                    var shortcutLabel = shortcutColumn.shortcutLabels[i]
+                    var lPoint = mapFromItem(shortcutLabel, 0, 0)
+                    if (lPoint.y && mouseY < lPoint.y + shortcutLabel.height) {
+                        selectedItem = shortcutLabel
+                        break
+                    }
                 }
-            }
 
-            if (selectedMenuItem !== selectedItem) {
-                console.log("Springboard | Update selected meneu item to " + selectedItem.text)
-                selectedMenuItem = selectedItem
+                if (selectedMenuItem !== selectedItem) {
+                    console.log("Springboard | Update selected meneu item to " + selectedItem.text)
+                    selectedMenuItem = selectedItem
+                }
             }
         }
 
         function createShortcuts(shortcuts) {
             var leftDistance = mainView.innerSpacing * 4
             var componentWidth = Screen.width > 520 ? Screen.width * 0.6 - leftDistance : Screen.width - leftDistance
-            console.log("Springboard | Width " + componentWidth)
             for (var i = 0; i < shortcuts.length; i++) {
                 if (shortcuts[i]["activated"]) {
                     var component = Qt.createComponent("/Shortcut.qml", shortcutColumn)
                     var properties = { "actionId": shortcuts[i]["id"],
                         "text": shortcuts[i]["name"],
                         "labelFontSize": mainView.largeFontSize,
-                        "leftPadding": leftDistance,
+                        "leftPadding": mainView.useLeftHandedMenu ? leftDistance / 2 : leftDistance,
+                        "rightPadding": mainView.useLeftHandedMenu ? leftDistance : 0,
                         "bottomPadding": mainView.innerSpacing,
                         "width": componentWidth }
                     if (component.status !== Component.Ready) {
@@ -1405,6 +1561,7 @@ LauncherPage {
                             console.debug("Springboard | Error: "+ component.errorString() )
                     }
                     var object = component.createObject(shortcutColumn, properties)
+                    shortcutColumn.shortcutLabelheight = object.height
                     shortcutColumn.shortcutLabels.push(object)
                 }
             }
@@ -1471,13 +1628,30 @@ LauncherPage {
                     console.log("Springboard | Create event")
                     AN.SystemDispatcher.dispatch("volla.launcher.createEventAction", {"title": qsTr("My event")})
                     break
+                case mainView.actionType.Redial:
+                    console.log("Springboard | Redial")
+                    var callAge = 84000 * 2 // two days in milli seconds
+                    AN.SystemDispatcher.dispatch("volla.launcher.recentCallAction", {"date": callAge})
+                    break
                 default:
                     console.log("Springboard | Open app or shortcut")
                     if (selectedMenuItem.actionId.startsWith("http")) {
                         // Workaround for web shortcuts
                         Qt.openUrlExternally(selectedMenuItem.actionId)
+                    } else if (selectedMenuItem.actionId.startsWith("tel")) {
+                        var phoneNumber = selectedMenuItem.actionId.split(":")[1]
+                        util.makeCall({"number": phoneNumber, "intent": "call"})
                     } else {
-                        AN.SystemDispatcher.dispatch("volla.launcher.runAppAction", {"appId": selectedMenuItem.actionId})
+                        var appDesctiptor = selectedMenuItem.actionId.split("|")
+                        if (appDesctiptor.length === 1) {
+                            AN.SystemDispatcher.dispatch("volla.launcher.runAppAction", {"appId": selectedMenuItem.actionId})
+                        } else if (appDesctiptor.length === 2) {
+                            AN.SystemDispatcher.dispatch("volla.launcher.launchShortcut", {"shortcutId": appDesctiptor[0],
+                                                             "package": appDesctiptor[1]})
+                        } else {
+                            AN.SystemDispatcher.dispatch("volla.launcher.runAppAction", {"appId": appDesctiptor[0],
+                                                             "class": appDesctiptor[1], "userHandle": appDesctiptor[2], "isCloned": true})
+                        }
                     }
                     break
             }
@@ -1485,14 +1659,16 @@ LauncherPage {
 
         Rectangle {
             id: shortcutBackground
+            visible: true
             anchors.bottom: parent.bottom
             anchors.bottomMargin: roundedShortcutMenu ? mainView.innerSpacing * 2 : 0
-            anchors.right: parent.right
-            anchors.rightMargin: roundedShortcutMenu ? mainView.innerSpacing * 2 : 0
+            anchors.right: mainView.useLeftHandedMenu ? undefined : parent.right
+            anchors.left: mainView.useLeftHandedMenu ? parent.left : undefined
+            anchors.rightMargin: mainView.useLeftHandedMenu ? undefined : (roundedShortcutMenu ? mainView.innerSpacing * 2 : 0)
+            anchors.leftMargin: mainView.useLeftHandedMenu ? (roundedShortcutMenu ? mainView.innerSpacing * 2 : 0) : undefined
             height: dotShortcut ? mainView.innerSpacing * 2 : mainView.innerSpacing
-            width: dotShortcut ? mainView.innerSpacing * 2 : parent.width
+            width: dotShortcut ? mainView.innerSpacing * 2 : mainView.innerSpacing
             color: mainView.accentColor
-            visible: true
             radius: roundedShortcutMenu ? rootMenuButton.width / 2 : 0
 
             property int duration: 150
@@ -1513,18 +1689,21 @@ LauncherPage {
             id: shortcutColumn
             visible: true
             opacity: 0.0
-            width: parent.width - mainView.innerSpacing * 2
-            topPadding: mainView.innerSpacing * 1.5
+            width:  parent.width - mainView.innerSpacing * 2
+            topPadding: mainView.innerSpacing * 2
             rightPadding: mainView.innerSpacing
             leftPadding: mainView.innerSpacing
             bottomPadding: mainView.innerSpacing
-            anchors.right: parent.right
-            anchors.rightMargin: roundedShortcutMenu ? mainView.innerSpacing * 2 : 0
+            anchors.right: mainView.useLeftHandedMenu ? undefined : parent.right
+            anchors.left: mainView.useLeftHandedMenu ? parent.left : undefined
+            anchors.rightMargin: mainView.useLeftHandedMenu ? undefined : (roundedShortcutMenu ? mainView.innerSpacing * 2 : 0)
+            anchors.leftMargin: mainView.useLeftHandedMenu ? (roundedShortcutMenu ? mainView.innerSpacing * 2 : 0) : undefined
             anchors.bottom: parent.bottom
             anchors.bottomMargin: roundedShortcutMenu ? mainView.innerSpacing * 2 : 0
 
             property int duration: 200
             property var shortcutLabels: new Array
+            property var shortcutLabelheight: 0
 
             Behavior on opacity {
                 NumberAnimation {
@@ -1537,11 +1716,13 @@ LauncherPage {
             id: rootMenuButton
             visible: true
             height: dotShortcut ? mainView.innerSpacing * 2 : mainView.innerSpacing
-            width: dotShortcut ? mainView.innerSpacing * 2 : parent.width
+            width: dotShortcut ? mainView.innerSpacing * 2 : mainView.innerSpacing
             color: mainView.accentColor
             radius: dotShortcut ? width * 0.5 : 0.0
-            anchors.right: parent.right
-            anchors.rightMargin: dotShortcut ? mainView.innerSpacing * 2 : 0
+            anchors.right: mainView.useLeftHandedMenu ? undefined : parent.right
+            anchors.left: mainView.useLeftHandedMenu ? parent.left : undefined
+            anchors.rightMargin: mainView.useLeftHandedMenu ? undefined : (dotShortcut ? mainView.innerSpacing * 2 : 0)
+            anchors.leftMargin: mainView.useLeftHandedMenu ? (dotShortcut ? mainView.innerSpacing * 2 : 0) : undefined
             anchors.bottom: parent.bottom
             anchors.bottomMargin: dotShortcut ? mainView.innerSpacing * 2 : 0
         }
@@ -1549,7 +1730,9 @@ LauncherPage {
 
     Column {
         id: appSwitcher
-        x: dotShortcut ? mainView.innerSpacing * 2 - mainView.outerSpacing : 0 - mainView.outerSpacing
+        x: mainView.useLeftHandedMenu ?
+            (parent.width - (dotShortcut ? mainView.innerSpacing * 2 - mainView.outerSpacing : 0 - mainView.outerSpacing) - width) :
+            (dotShortcut ? mainView.innerSpacing * 2 - mainView.outerSpacing : 0 - mainView.outerSpacing)
         anchors.bottom: closeAppsButton.top
         anchors.bottomMargin: mainView.innerSpacing
         spacing: mainView.innerSpacing
@@ -1558,7 +1741,9 @@ LauncherPage {
 
     Button {
         id: closeAppsButton
-        x: dotShortcut ? mainView.innerSpacing * 2 - mainView.outerSpacing : 0 - mainView.outerSpacing
+        x: mainView.useLeftHandedMenu ?
+               (parent.width - (dotShortcut ? mainView.innerSpacing * 2 - mainView.outerSpacing : 0 - mainView.outerSpacing) - width) :
+               (dotShortcut ? mainView.innerSpacing * 2 - mainView.outerSpacing : 0 - mainView.outerSpacing)
         anchors.bottom: parent.bottom
         anchors.bottomMargin: dotShortcut ? mainView.innerSpacing * 2 : 0
         width: mainView.innerSpacing * 2

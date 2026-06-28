@@ -61,7 +61,65 @@
     </message>
     <message>
         <source>Remove App</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fjern app</translation>
+    </message>
+    <message>
+        <source>Add to new group</source>
+        <translation type="unfinished">Føj til ny gruppe</translation>
+    </message>
+    <message>
+        <source>Remove from group</source>
+        <translation type="unfinished">Fjern fra gruppe</translation>
+    </message>
+    <message>
+        <source>Use custom groups</source>
+        <translation type="unfinished">Brug brugerdefinerede grupper</translation>
+    </message>
+    <message>
+        <source>Remove group</source>
+        <translation type="unfinished">Fjern gruppe</translation>
+    </message>
+    <message>
+        <source>Edit groupname</source>
+        <translation type="unfinished">Rediger gruppenavn</translation>
+    </message>
+    <message>
+        <source>Group name</source>
+        <translation type="unfinished">Gruppenavn</translation>
+    </message>
+    <message>
+        <source>Enter a group name</source>
+        <translation type="unfinished">Indtast et gruppenavn</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Annuller</translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation type="unfinished">Ok</translation>
+    </message>
+    <message>
+        <source>Group name must have at least one character.</source>
+        <translation type="unfinished">Gruppenavnet skal bestå af mindst ét tegn.</translation>
+    </message>
+</context>
+<context>
+    <name>AppGridMenuItem</name>
+    <message>
+        <source>Add to </source>
+        <translation type="unfinished">Føj til </translation>
+    </message>
+    <message>
+        <source>Favorits</source>
+        <translation type="unfinished">Favoritter</translation>
+    </message>
+</context>
+<context>
+    <name>AppGroup</name>
+    <message>
+        <source>Favorits</source>
+        <translation type="unfinished">Favoritter</translation>
     </message>
 </context>
 <context>
@@ -99,11 +157,11 @@
     </message>
     <message>
         <source>Notes</source>
-        <translation type="unfinished">Noter</translation>
+        <translation type="unfinished">Notater</translation>
     </message>
     <message>
         <source>Find note ...</source>
-        <translation type="unfinished">Find note ...</translation>
+        <translation type="unfinished">Find notat ...</translation>
     </message>
     <message>
         <source>Filter collections</source>
@@ -231,11 +289,11 @@
     </message>
     <message>
         <source>Touch the red dot, drag to a menu item and release for your selection.</source>
-        <translation type="unfinished">Berør den røde prik, træk til et menupunkt, og slip for at vælge.</translation>
+        <translation type="unfinished">Tryk på den røde prik, stryg til et menupunkt og slip for at vælge.</translation>
     </message>
     <message>
         <source>Use smart content collections for recent contacts, messages, news and notes</source>
-        <translation type="unfinished">Brug smarte indholdssamlinger til seneste kontakter, beskeder, nyheder og noter</translation>
+        <translation type="unfinished">Brug smarte indholdssamlinger til seneste kontakter, beskeder, nyheder og notater</translation>
     </message>
     <message>
         <source>Swipe to the right to see the app overview</source>
@@ -270,15 +328,15 @@
     </message>
     <message>
         <source>Dark Mode</source>
-        <translation type="unfinished">Mørk stil</translation>
+        <translation type="unfinished">Mørk modus</translation>
     </message>
     <message>
         <source>Light Mode</source>
-        <translation type="unfinished">Lys stil</translation>
+        <translation type="unfinished">Lys modus</translation>
     </message>
     <message>
         <source>Translucent Mode</source>
-        <translation type="obsolete">Gennemskinnelig stil</translation>
+        <translation type="obsolete">Transparent modus</translation>
     </message>
     <message>
         <source>Security mode is OFF</source>
@@ -306,7 +364,7 @@
     </message>
     <message>
         <source>Ok</source>
-        <translation type="unfinished">Annuller</translation>
+        <translation type="unfinished">Ok</translation>
     </message>
     <message>
         <source>Wrong password confirmation</source>
@@ -374,7 +432,7 @@
     </message>
     <message>
         <source>Show grouped apps</source>
-        <translation type="unfinished">Vis grupperede apps</translation>
+        <translation type="obsolete">Vis grupperede apps</translation>
     </message>
     <message>
         <source>Use app categories</source>
@@ -410,7 +468,7 @@
     </message>
     <message>
         <source>Signal app is not installed</source>
-        <translation type="unfinished">Signal-appen er ikke installeret</translation>
+        <translation type="unfinished">Signal er ikke installeret</translation>
     </message>
     <message>
         <source>Springboard Skills</source>
@@ -418,35 +476,75 @@
     </message>
     <message>
         <source>Couldn&apos;t load available plugins</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kunne ikke indlæse tilgængelige plugins</translation>
     </message>
     <message>
         <source>Password needs at least four characters or numbers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Adgangskoden skal bestå af mindst fire tegn eller tal.</translation>
     </message>
     <message>
         <source>Weather</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vejr</translation>
     </message>
     <message>
         <source>Clock</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ur</translation>
     </message>
     <message>
         <source>Note</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Notat</translation>
     </message>
     <message>
         <source>Widgets</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Widgets</translation>
     </message>
     <message>
         <source>Dark Translucent Mode</source>
-        <translation type="unfinished">Mørk gennemskinnelig tilstand</translation>
+        <translation type="unfinished">Mørk transparent tilstand</translation>
     </message>
     <message>
         <source>Light Translucent Mode</source>
-        <translation type="unfinished">Let gennemskinnelig tilstand</translation>
+        <translation type="unfinished">Lys transparent tilstand</translation>
+    </message>
+    <message>
+        <source>Show frequently used apps</source>
+        <translation type="unfinished">Vis ofte anvendte apps</translation>
+    </message>
+    <message>
+        <source>Left-handed quick menu</source>
+        <translation type="unfinished">Hurtigmenu til venstrehåndede</translation>
+    </message>
+    <message>
+        <source>Accent Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose Accent Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset to Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show app names</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keep the wallpaper unchanged</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dialer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restart app</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -513,7 +611,7 @@
     </message>
     <message>
         <source>New note saved</source>
-        <translation type="unfinished">Ny note gemt</translation>
+        <translation type="unfinished">Nyt notat gemt</translation>
     </message>
     <message>
         <source>My event</source>
@@ -529,19 +627,31 @@
     </message>
     <message>
         <source>weather</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vejr</translation>
     </message>
     <message>
         <source>Set location</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Indstil placering</translation>
     </message>
     <message>
         <source>Enter any location</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Indtast en placering</translation>
     </message>
     <message>
         <source>x</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There was no outgoing call in the last days.</source>
+        <translation type="unfinished">Der har ikke været nogen udgående opkald i de sidste dage.</translation>
+    </message>
+    <message>
+        <source>New contact saved</source>
+        <translation type="unfinished">Ny kontakt gemt</translation>
+    </message>
+    <message>
+        <source>Speed dial</source>
+        <translation type="unfinished">Hurtigopkald</translation>
     </message>
 </context>
 <context>
@@ -556,7 +666,7 @@
     </message>
     <message>
         <source>Ok</source>
-        <translation type="unfinished">Annuller</translation>
+        <translation type="unfinished">Ok</translation>
     </message>
 </context>
 <context>
@@ -607,7 +717,7 @@
     </message>
     <message>
         <source>Create note</source>
-        <translation type="unfinished">Opret note</translation>
+        <translation type="unfinished">Opret notat</translation>
     </message>
     <message>
         <source>Search web</source>
@@ -627,7 +737,7 @@
     </message>
     <message>
         <source>Show Notes</source>
-        <translation type="unfinished">Vis noter</translation>
+        <translation type="unfinished">Vis notater</translation>
     </message>
     <message>
         <source>Send Signal message</source>
@@ -771,23 +881,23 @@
     </message>
     <message>
         <source>You have alresdy added the shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Du har allerede tilføjet genvejen..</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kunne ikke indlæse plugin</translation>
     </message>
     <message>
         <source>Files</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Filer</translation>
     </message>
     <message>
         <source>Messages</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Beskeder</translation>
     </message>
     <message>
         <source>Music</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Musik</translation>
     </message>
     <message>
         <source>Bancontact</source>
@@ -839,7 +949,7 @@
     </message>
     <message>
         <source>Maps</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kort</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -851,7 +961,19 @@
     </message>
     <message>
         <source>Weather</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vejr</translation>
+    </message>
+    <message>
+        <source>Redial</source>
+        <translation type="unfinished">Ring op igen</translation>
+    </message>
+    <message>
+        <source>Create new contact</source>
+        <translation type="unfinished">Opret ny kontakt</translation>
+    </message>
+    <message>
+        <source>Create speed dial</source>
+        <translation type="unfinished">Opret hurtigopkald</translation>
     </message>
 </context>
 </TS>

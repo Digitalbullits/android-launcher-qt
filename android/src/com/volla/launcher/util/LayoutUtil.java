@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import org.qtproject.qt5.android.QtNative;
 import com.volla.launcher.R;
+import com.volla.launcher.util.OverlayReflect;
 
 public class LayoutUtil {
 
@@ -36,6 +37,8 @@ public class LayoutUtil {
     public static final String SET_COLOR = "volla.launcher.colorAction";
     public static final String GET_NAVBAR_HEIGHT = "volla.launcher.navBarAction";
     public static final String GOT_NAVBAR_HEIGHT = "volla.launcher.navBarResponse";
+    public static final String GET_SYSTEM_FONT = "volla.launcher.fontAction";
+    public static final String GOT_SYSTEM_FONT = "volla.launcher.fontResponse";
 
     static {
         SystemDispatcher.addListener(new SystemDispatcher.Listener() {
@@ -150,6 +153,21 @@ public class LayoutUtil {
                     };
 
                     activity.runOnUiThread(runnable);
+                } else if (type.equals(GET_SYSTEM_FONT)) {
+                    final Activity activity = QtNative.activity();
+
+                    Runnable runnable = new Runnable () {
+                        public void run() {
+                            int resId = Resources.getSystem().getIdentifier("config_bodyFontFamily", "string", "android");
+                            String systemFont = OverlayReflect.getEnabledFontOverlay();
+                            Map responseMessage = new HashMap();
+                            responseMessage.put("font", systemFont);
+                            SystemDispatcher.dispatch(GOT_SYSTEM_FONT, responseMessage);
+                        }
+                    };
+
+                    Thread thread = new Thread(runnable);
+                    thread.start();
                 } else if (type.equals(GET_NAVBAR_HEIGHT)) {
                     final Activity activity = QtNative.activity();
 

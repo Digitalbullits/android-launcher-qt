@@ -61,7 +61,65 @@
     </message>
     <message>
         <source>Remove App</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Poista sovellus</translation>
+    </message>
+    <message>
+        <source>Add to new group</source>
+        <translation type="unfinished">Lisää uuteen ryhmään</translation>
+    </message>
+    <message>
+        <source>Remove from group</source>
+        <translation type="unfinished">Poista ryhmästä</translation>
+    </message>
+    <message>
+        <source>Use custom groups</source>
+        <translation type="unfinished">Käytä mukautettuja ryhmiä</translation>
+    </message>
+    <message>
+        <source>Remove group</source>
+        <translation type="unfinished">Poista ryhmä</translation>
+    </message>
+    <message>
+        <source>Edit groupname</source>
+        <translation type="unfinished">Muokkaa ryhmän nimeä</translation>
+    </message>
+    <message>
+        <source>Group name</source>
+        <translation type="unfinished">Ryhmän nimi</translation>
+    </message>
+    <message>
+        <source>Enter a group name</source>
+        <translation type="unfinished">Syötä ryhmän nimi</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Peruuta</translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation type="unfinished">Ok</translation>
+    </message>
+    <message>
+        <source>Group name must have at least one character.</source>
+        <translation type="unfinished">Ryhmän nimessä on oltava vähintään yksi merkki.</translation>
+    </message>
+</context>
+<context>
+    <name>AppGridMenuItem</name>
+    <message>
+        <source>Add to </source>
+        <translation type="unfinished">Lisää </translation>
+    </message>
+    <message>
+        <source>Favorits</source>
+        <translation type="unfinished">Suosikit</translation>
+    </message>
+</context>
+<context>
+    <name>AppGroup</name>
+    <message>
+        <source>Favorits</source>
+        <translation type="unfinished">Suosikit</translation>
     </message>
 </context>
 <context>
@@ -423,7 +481,7 @@
     </message>
     <message>
         <source>Show grouped apps</source>
-        <translation type="unfinished">Näytä ryhmitellyt sovellukset</translation>
+        <translation type="obsolete">Näytä ryhmitellyt sovellukset</translation>
     </message>
     <message>
         <source>Use app categories</source>
@@ -455,23 +513,23 @@
     </message>
     <message>
         <source>Couldn&apos;t load available plugins</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Käytettävissä olevia laajennuksia ei voitu ladata</translation>
     </message>
     <message>
         <source>Password needs at least four characters or numbers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Salasana on oltava vähintään neljä merkkiä tai numeroa.</translation>
     </message>
     <message>
         <source>Weather</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sää</translation>
     </message>
     <message>
         <source>Clock</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kello</translation>
     </message>
     <message>
         <source>Note</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Huomautus</translation>
     </message>
     <message>
         <source>Widgets</source>
@@ -484,6 +542,46 @@
     <message>
         <source>Light Translucent Mode</source>
         <translation type="unfinished">Kevyt läpikuultava tila</translation>
+    </message>
+    <message>
+        <source>Show frequently used apps</source>
+        <translation type="unfinished">Näytä usein käytetyt sovellukset</translation>
+    </message>
+    <message>
+        <source>Left-handed quick menu</source>
+        <translation type="unfinished">Pikavalikko vasenkätisille</translation>
+    </message>
+    <message>
+        <source>Accent Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose Accent Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset to Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show app names</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keep the wallpaper unchanged</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dialer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restart app</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -666,19 +764,31 @@
     </message>
     <message>
         <source>weather</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sää</translation>
     </message>
     <message>
         <source>Set location</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Aseta sijainti</translation>
     </message>
     <message>
         <source>Enter any location</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Syötä mikä tahansa sijaintiSyötä sijainti</translation>
     </message>
     <message>
         <source>x</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There was no outgoing call in the last days.</source>
+        <translation type="unfinished">Viime päivinä ei ole ollut lähteviä puheluita.</translation>
+    </message>
+    <message>
+        <source>New contact saved</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Speed dial</source>
+        <translation type="unfinished">Pikavalinta</translation>
     </message>
 </context>
 <context>
@@ -904,19 +1014,19 @@
     </message>
     <message>
         <source>Couldn&apos;t load plugin</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pluginia ei voitu ladata</translation>
     </message>
     <message>
         <source>Files</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tiedostot</translation>
     </message>
     <message>
         <source>Messages</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Viestit</translation>
     </message>
     <message>
         <source>Music</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Musiikki</translation>
     </message>
     <message>
         <source>Bancontact</source>
@@ -968,7 +1078,7 @@
     </message>
     <message>
         <source>Maps</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kartat</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -980,7 +1090,19 @@
     </message>
     <message>
         <source>Weather</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sää</translation>
+    </message>
+    <message>
+        <source>Redial</source>
+        <translation type="unfinished">Uudelleensoitto</translation>
+    </message>
+    <message>
+        <source>Create new contact</source>
+        <translation type="unfinished">Luo uusi yhteystieto</translation>
+    </message>
+    <message>
+        <source>Create speed dial</source>
+        <translation type="unfinished">Luo pikavalinta</translation>
     </message>
 </context>
 </TS>
